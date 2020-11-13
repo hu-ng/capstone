@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "mvp"
+version = "0.1.0"
+description = ""
+authors = ["Hung Nguyen <hung.nguyen.2@minerva.kgi.edu>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+fastapi = "^0.61.2"
+uvicorn = "^0.12.2"
+email-validator = "^1.1.2"
+motor = "^2.3.0"
+tornado = "^6.1"
+python-dotenv = "^0.15.0"
+fastapi-users = {extras = ["mongodb"], version = "^3.0.6"}
+
+[tool.poetry.dev-dependencies]
+pytest = "^4.6"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
