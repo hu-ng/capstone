@@ -3,7 +3,7 @@ Provides helper functions to interact with the database
 """
 
 from bson.objectid import ObjectId
-from server.database import bucket_collection, connection_collection
+from mvp.server.database import bucket_collection, connection_collection
 
 
 # Convert what is returned by MongoDB into the correct format

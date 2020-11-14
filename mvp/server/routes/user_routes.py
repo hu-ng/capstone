@@ -2,9 +2,9 @@ from fastapi_users import FastAPIUsers
 from fastapi import Request
 from typing import Dict, Any
 
-from server.models.user_models import User, UserCreate, UserUpdate, UserDB
-from server.auth import auth_backends
-from server.database import user_db
+from mvp.server.models.user_models import User, UserCreate, UserUpdate, UserDB
+from mvp.server.auth import auth_backends
+from mvp.server.database import user_db
 
 fastapi_users = FastAPIUsers(
     user_db,
