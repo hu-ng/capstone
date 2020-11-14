@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from server.database import connection_collection
+from server.database import connection_collection, bucket_collection
 
 
 def connection_helper(connection) -> dict:
@@ -35,6 +35,12 @@ async def get_connection(id: str, user_id: str) -> dict:
 
 # Create connection
 async def create_connection(data: dict):
+    # Check if the bucket exists
+    if data["bucket_id"]:
+        bucket = await bucket_collection.find_one({"_id": ObjectId(data["bucket_id"])})
+        if not bucket:
+            return False
+
     connection = await connection_collection.insert_one(data)
     new_connection = await connection_collection.find_one({"_id": connection.inserted_id})
 
@@ -45,6 +51,14 @@ async def create_connection(data: dict):
 async def update_connection(id: str, user_id: str, data: dict):
     if len(data) < 1:
         return False
+
+    # Check if the bucket exists
+    if data["bucket_id"]:
+        bucket = await bucket_collection.find_one({"_id": ObjectId(data["bucket_id"])})
+        if not bucket:
+            return False
+    
+    # Get existing connection and update it
     connection = await connection_collection.find_one({"_id": ObjectId(id)})
     if connection and connection["user_id"] == user_id:
         result = await connection_collection.update_one(

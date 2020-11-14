@@ -1,11 +1,9 @@
 from fastapi import FastAPI, Depends
-from .routes import student_routes, user_routes, connection_routes
+from .routes import user_routes, connection_routes, bucket_routes
 from .models.user_models import User
 
 
 app = FastAPI()
-
-app.include_router(student_routes.router, tags=["student"], prefix="/student")
 
 # Login router
 app.include_router(user_routes.auth_router, tags=["auth"], prefix="/auth/jwt")
@@ -19,6 +17,8 @@ app.include_router(user_routes.users_router, tags=["users"], prefix="/users")
 # Connections router
 app.include_router(connection_routes.router, tags=["connections"], prefix="/connections")
 
+# Buckets router
+app.include_router(bucket_routes.router, tags=["buckets"], prefix="/buckets")
 
 @app.get("/", tags=["index"])
 async def index():
