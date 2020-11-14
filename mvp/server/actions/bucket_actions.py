@@ -1,7 +1,12 @@
+"""
+Provides helper functions to interact with the database
+"""
+
 from bson.objectid import ObjectId
 from server.database import bucket_collection, connection_collection
 
 
+# Convert what is returned by MongoDB into the correct format
 def bucket_helper(bucket) -> dict:
     return {
         "id": str(bucket["_id"]),
@@ -44,6 +49,8 @@ async def create_bucket(data: dict):
 async def update_bucket(id: str, user_id: str, data: dict):
     if len(data) < 1:
         return False
+
+    # Check if the bucket exists, if so update it
     bucket = await bucket_collection.find_one({"_id": ObjectId(id)})
     if bucket and bucket["user_id"] == user_id:
         result = await bucket_collection.update_one(
@@ -61,9 +68,9 @@ async def update_bucket(id: str, user_id: str, data: dict):
 async def delete_bucket(id: str, user_id: str):
     bucket = await bucket_collection.find_one({"_id": ObjectId(id)})
     if bucket and bucket["user_id"] == user_id:
-        # Update the affected people in that bucket
+        # Update the affected connections in that bucket
         await connection_collection.update_many(
-            {"bucket_id": {"$eq": id}},           # THIS MIGHT BREAK STUFF
+            {"bucket_id": {"$eq": id}},
             {'$set': {"bucket_id": None}})
     
 

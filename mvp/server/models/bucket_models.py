@@ -1,3 +1,7 @@
+"""
+Initialize Pydantic models for buckets. This helps FastAPI do what it's supposed to do
+"""
+
 from pydantic import BaseModel, UUID4
 from typing import Optional
 

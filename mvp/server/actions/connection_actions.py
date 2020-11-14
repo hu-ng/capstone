@@ -1,3 +1,7 @@
+"""
+Provides helper functions to interact with the database
+"""
+
 from bson.objectid import ObjectId
 from server.database import connection_collection, bucket_collection
 

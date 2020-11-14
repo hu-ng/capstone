@@ -1,3 +1,7 @@
+"""
+This is the heart of the application. It exposes all the routes of the API
+"""
+
 from fastapi import FastAPI, Depends
 from .routes import user_routes, connection_routes, bucket_routes
 from .models.user_models import User
@@ -22,4 +26,4 @@ app.include_router(bucket_routes.router, tags=["buckets"], prefix="/buckets")
 
 @app.get("/", tags=["index"])
 async def index():
-    return {"message": "Welcome to this fantastic app!"}
+    return {"message": "Welcome to the demo"}

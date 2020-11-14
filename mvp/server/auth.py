@@ -1,3 +1,7 @@
+"""
+Setting up log-in methods
+"""
+
 from fastapi_users.authentication import JWTAuthentication
 
 SECRET = "SECRET"

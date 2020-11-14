@@ -1,3 +1,7 @@
+"""
+Defines all actions that authenticated users can take with buckets
+"""
+
 from fastapi import APIRouter, Body, Depends
 from fastapi.encoders import jsonable_encoder
 from typing import List, Optional

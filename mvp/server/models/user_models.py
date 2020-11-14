@@ -1,3 +1,7 @@
+"""
+Initialize Pydantic models for users. This helps FastAPI do what it's supposed to do
+"""
+
 from fastapi_users import models
 
 

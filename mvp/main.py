@@ -1,3 +1,8 @@
+"""
+Main entry point to the app
+Function: starts the server
+"""
+
 import uvicorn
 
 if __name__ == "__main__":

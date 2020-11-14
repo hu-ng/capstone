@@ -1,5 +1,5 @@
 """
-Makes a connection to the database
+Makes a connection to the database on the cloud, and initialize the variables that we need
 """
 
 import motor.motor_asyncio
