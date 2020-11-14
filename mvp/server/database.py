@@ -2,14 +2,14 @@
 Makes a connection to the database
 """
 
-import motor.motor_tornado
+import motor.motor_asyncio
 from mvp import settings
 from server.models.user_models import UserDB
 from fastapi_users.db import MongoDBUserDatabase
 
 MONGO_DETAILS = settings.MONGO_DETAILS
 
-client = motor.motor_tornado.MotorClient(MONGO_DETAILS)
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
 database = client.app
 
