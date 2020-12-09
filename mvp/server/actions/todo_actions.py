@@ -1,11 +1,10 @@
-from bson.objectid import ObjectId
 from mvp.server.database import jobs_collection, todos_collection
 from mvp.server.models.job_models import JobInDB, JobCreate, JobUpdate
 from mvp.server.models.todo_models import TodoInDB, TodoCreate, TodoUpdate
 from typing import List
 
 # Get all todos for a job
-async def get_todos(job: JobInDB):
+async def get_all(job: JobInDB):
     todos = []
     for todo_id in job.todos:
         todo = await todos_collection.find_one({"_id": todo_id})
@@ -15,13 +14,13 @@ async def get_todos(job: JobInDB):
 
 
 # find a todo
-async def get_todo(id):
+async def get_one(id):
     todo = await todos_collection.find_one({"_id": id})
     return TodoInDB.from_mongo(todo)
 
 
 # create a new todo
-async def add_todo(todo: TodoCreate):
+async def create(todo: TodoCreate):
     # Create todo document
     new_todo = await todos_collection.insert_one(todo.mongo())
     created_todo = await todos_collection.find_one({"_id": new_todo.inserted_id})
@@ -30,7 +29,7 @@ async def add_todo(todo: TodoCreate):
 
 
 # Update existing todo
-async def update_todo(id, todo: TodoUpdate):
+async def update(id, todo: TodoUpdate):
     # Transform data
     update_data = todo.mongo(exclude_unset=True)
     
@@ -44,6 +43,6 @@ async def update_todo(id, todo: TodoUpdate):
 
 
 # Delete a job
-async def delete_todo(id):
+async def delete(id):
     result = await todos_collection.delete_one({"_id": id})
     return result.deleted_count == 1

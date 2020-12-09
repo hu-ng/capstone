@@ -1,18 +1,15 @@
-from pydantic import UUID4
+from pydantic import UUID4, Field
 from datetime import datetime
-from typing import Optional, Dict
-from bson import ObjectId
 from .mongo_base_model import MongoModel
+import uuid
 
 # Shared properties
 class MessageBase(MongoModel):
-    keywords: Dict[str, str] = {}
-    email: str = ""
-    template_id: str = ""
+    email: str = ""  # This is going to be json string
 
 # Props to receive on message creation
 class MessageCreate(MessageBase):
-    keywords: Dict
+    id: UUID4 = Field(default_factory=uuid.uuid4)
     email: str
 
 
@@ -23,12 +20,10 @@ class MessageUpdate(MessageBase):
 
 # Props to return to client
 class Message(MessageBase):
-    id: str
+    id: UUID4
 
 
 # Props in the DB
 class MessageInDB(MessageBase):
     id: UUID4
-    keywords: Dict
     email: str
-    template_id: UUID4

@@ -25,5 +25,8 @@ todos_collection = database.get_collection("todos_collection")
 # Templates collection
 templates_collection = database.get_collection("templates_collection")
 
+# Message collection
+message_collection = database.get_collection("messages_collection")
+
 # MongoDB Database adapter
 user_db = MongoDBUserDatabase(UserDB, user_collection)

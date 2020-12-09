@@ -11,7 +11,7 @@ import mvp.server.actions.todo_actions as todo_actions
 
 
 # Get all jobs for this user
-async def get_all_jobs(user_id):
+async def get_all(user_id):
     cursor = jobs_collection.find({
         "user_id": { "$eq": user_id}
     })
@@ -22,7 +22,7 @@ async def get_all_jobs(user_id):
 
 
 # Get one job
-async def get_job(id, user_id):
+async def get_one(id, user_id):
     found_job = await jobs_collection.find_one({"_id": id})
     if found_job and found_job["user_id"] == user_id:
         return JobInDB.from_mongo(found_job)
@@ -31,14 +31,14 @@ async def get_job(id, user_id):
 
 
 # Create one job
-async def create_job(data: JobCreate):
+async def create(data: JobCreate):
     new_job = await jobs_collection.insert_one(data.mongo())
     created_job = await jobs_collection.find_one({"_id": new_job.inserted_id})
     return JobInDB.from_mongo(created_job)
 
 
 # Update a job
-async def update_job(id, data: JobUpdate):
+async def update(id, data: JobUpdate):
     update_data = data.mongo(exclude_unset=True)
     
     await jobs_collection.update_one(
@@ -50,13 +50,13 @@ async def update_job(id, data: JobUpdate):
 
 # Delete a job and all things with it
 # Todos and Messages
-async def delete_job(id):
+async def delete(id):
     job = await jobs_collection.find_one({"_id": id})
     job = JobInDB.from_mongo(job)
 
     # Delete all todos
     for todo_id in job.todos:
-        await todo_actions.delete_todo(todo_id)
+        await todo_actions.delete(todo_id)
 
     # Delete the job
     result = await jobs_collection.delete_one({"_id": id})

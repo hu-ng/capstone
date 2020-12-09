@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.responses import Response
 from typing import List, Optional
 from pydantic import UUID4
-import requests
 
 
 import mvp.server.actions.template_actions as template_actions
