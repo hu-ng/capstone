@@ -2,7 +2,7 @@
 Defines all actions that authenticated users can take with jobs
 """
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import Response
 from typing import List, Optional
 from pydantic import UUID4
@@ -15,7 +15,6 @@ from mvp.server.models.job_models import Job, JobCreate, JobUpdate
 from mvp.server.models.todo_models import Todo, TodoCreate, TodoUpdate
 from mvp.server.models.user_models import User
 from .user_routes import fastapi_users
-
 
 
 router = APIRouter()

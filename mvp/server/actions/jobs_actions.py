@@ -40,7 +40,8 @@ async def create_job(data: JobCreate):
 # Update a job
 async def update_job(id, data: JobUpdate):
     update_data = data.mongo(exclude_unset=True)
-    update_result = await jobs_collection.update_one(
+    
+    await jobs_collection.update_one(
         {"_id": id}, {"$set": update_data}
     )
     updated_job = await jobs_collection.find_one({"_id": id})

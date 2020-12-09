@@ -47,7 +47,6 @@ class JobCreate(JobBase):
 class JobUpdate(JobBase):
     todos: List[UUID4] = []
     messages: List[UUID4] = []
-    pass
 
 
 # Props returned to client
@@ -61,6 +60,6 @@ class Job(JobBase):
 # Props in DB
 class JobInDB(JobBase):
     id: UUID4
-    todos: List[Optional[UUID4]] = []
-    messages: List[Optional[UUID4]] = []
+    todos: List[UUID4] = []
+    messages: List[UUID4] = []
     user_id: UUID4

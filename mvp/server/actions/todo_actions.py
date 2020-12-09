@@ -1,7 +1,7 @@
 from bson.objectid import ObjectId
 from mvp.server.database import jobs_collection, todos_collection
-from mvp.server.models.job_models import Job, JobInDB, JobCreate, JobUpdate
-from mvp.server.models.todo_models import Todo, TodoInDB, TodoCreate, TodoUpdate
+from mvp.server.models.job_models import JobInDB, JobCreate, JobUpdate
+from mvp.server.models.todo_models import TodoInDB, TodoCreate, TodoUpdate
 from typing import List
 
 # Get all todos for a job
@@ -33,7 +33,8 @@ async def add_todo(todo: TodoCreate):
 async def update_todo(id, todo: TodoUpdate):
     # Transform data
     update_data = todo.mongo(exclude_unset=True)
-    update_result = await todos_collection.update_one(
+    
+    await todos_collection.update_one(
         {"_id": id}, {"$set": update_data}
     )
 

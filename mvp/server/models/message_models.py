@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4
+from pydantic import UUID4
 from datetime import datetime
 from typing import Optional, Dict
 from bson import ObjectId

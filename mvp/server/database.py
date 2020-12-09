@@ -22,5 +22,8 @@ jobs_collection = database.get_collection("jobs_collection")
 # Todos collection
 todos_collection = database.get_collection("todos_collection")
 
+# Templates collection
+templates_collection = database.get_collection("templates_collection")
+
 # MongoDB Database adapter
 user_db = MongoDBUserDatabase(UserDB, user_collection)
