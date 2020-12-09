@@ -3,8 +3,9 @@ This is the heart of the application. It exposes all the routes of the API
 """
 
 from fastapi import FastAPI, Depends
-from .routes import user_routes, connection_routes, bucket_routes
+from .routes import user_routes, job_routes
 from .models.user_models import User
+from .database import client
 
 
 app = FastAPI()
@@ -18,12 +19,14 @@ app.include_router(user_routes.register_router, tags=["auth"], prefix="/auth")
 # Users router
 app.include_router(user_routes.users_router, tags=["users"], prefix="/users")
 
-# Connections router
-app.include_router(connection_routes.router, tags=["connections"], prefix="/connections")
+# Jobs router
+app.include_router(job_routes.router, tags=["jobs"], prefix="/jobs")
 
-# Buckets router
-app.include_router(bucket_routes.router, tags=["buckets"], prefix="/buckets")
 
 @app.get("/", tags=["index"])
 async def index():
     return {"message": "Welcome to the demo"}
+
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    client.close()
