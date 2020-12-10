@@ -3,7 +3,7 @@ Makes a connection to the database on the cloud, and initialize the variables th
 """
 
 import motor.motor_asyncio
-from mvp import settings
+from backend import settings
 from .models.user_models import UserDB
 from fastapi_users.db import MongoDBUserDatabase
 

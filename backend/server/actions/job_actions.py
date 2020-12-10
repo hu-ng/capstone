@@ -2,12 +2,10 @@
 Provides helper functions to interact with the database
 """
 
-from bson.objectid import ObjectId
-from mvp.server.database import jobs_collection
-from mvp.server.models.job_models import JobInDB, JobCreate, JobUpdate
-from typing import List
+from backend.server.database import jobs_collection
+from backend.server.models.job_models import JobInDB, JobCreate, JobUpdate
 
-import mvp.server.actions.todo_actions as todo_actions
+import backend.server.actions.todo_actions as todo_actions
 
 
 # Get all jobs for this user
@@ -22,8 +20,8 @@ async def get_all(user_id):
 
 
 # Get one job
-async def get_one(id, user_id):
-    found_job = await jobs_collection.find_one({"_id": id})
+async def get_one(job_id, user_id):
+    found_job = await jobs_collection.find_one({"_id": job_id})
     if found_job and found_job["user_id"] == user_id:
         return JobInDB.from_mongo(found_job)
     else:
@@ -38,20 +36,20 @@ async def create(data: JobCreate):
 
 
 # Update a job
-async def update(id, data: JobUpdate):
+async def update(job_id, data: JobUpdate):
     update_data = data.mongo(exclude_unset=True)
     
     await jobs_collection.update_one(
-        {"_id": id}, {"$set": update_data}
+        {"_id": job_id}, {"$set": update_data}
     )
-    updated_job = await jobs_collection.find_one({"_id": id})
+    updated_job = await jobs_collection.find_one({"_id": job_id})
     return JobInDB.from_mongo(updated_job)
         
 
 # Delete a job and all things with it
 # Todos and Messages
-async def delete(id):
-    job = await jobs_collection.find_one({"_id": id})
+async def delete(job_id):
+    job = await jobs_collection.find_one({"_id": job_id})
     job = JobInDB.from_mongo(job)
 
     # Delete all todos
@@ -59,5 +57,5 @@ async def delete(id):
         await todo_actions.delete(todo_id)
 
     # Delete the job
-    result = await jobs_collection.delete_one({"_id": id})
+    result = await jobs_collection.delete_one({"_id": job_id})
     return result.deleted_count == 1

@@ -1,8 +1,6 @@
-from mvp.server.database import templates_collection
-from mvp.server.models.template_models import TemplateCreate, TemplateUpdate, TemplateInDB
-from mvp.server.models.user_models import User
-
-from typing import List
+from backend.server.database import templates_collection
+from backend.server.models.template_models import TemplateCreate, TemplateUpdate, TemplateInDB
+from backend.server.models.user_models import User
 
 
 # Get all templates for a user

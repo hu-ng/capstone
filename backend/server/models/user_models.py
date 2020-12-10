@@ -3,8 +3,6 @@ Initialize Pydantic models for users. This helps FastAPI do what it's supposed t
 """
 
 from fastapi_users import models
-from typing import List
-from pydantic import UUID4
 
 
 class User(models.BaseUser):

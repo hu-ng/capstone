@@ -1,7 +1,6 @@
-from mvp.server.database import jobs_collection, message_collection
-from mvp.server.models.job_models import JobInDB, JobCreate, JobUpdate
-from mvp.server.models.message_models import MessageInDB, MessageCreate, MessageUpdate
-from typing import List
+from backend.server.database import message_collection
+from backend.server.models.job_models import JobInDB
+from backend.server.models.message_models import MessageInDB, MessageCreate, MessageUpdate
 
 # Get all messages for a job
 async def get_all(job: JobInDB):
@@ -14,8 +13,8 @@ async def get_all(job: JobInDB):
 
 
 # find a message
-async def get_one(id):
-    message = await message_collection.find_one({"_id": id})
+async def get_one(msg_id):
+    message = await message_collection.find_one({"_id": msg_id})
     return MessageInDB.from_mongo(message)
 
 
@@ -28,20 +27,20 @@ async def create(message: MessageCreate):
 
 
 # Update existing message
-async def update(id, message: MessageUpdate):
+async def update(msg_id, message: MessageUpdate):
     # Transform data
     update_data = message.mongo(exclude_unset=True)
     
     await message_collection.update_one(
-        {"_id": id}, {"$set": update_data}
+        {"_id": msg_id}, {"$set": update_data}
     )
 
     # Find updated document
-    updated_message = await message_collection.find_one({"_id": id})
+    updated_message = await message_collection.find_one({"_id": msg_id})
     return MessageInDB.from_mongo(updated_message)
 
 
 # Delete a message
-async def delete(id):
-    result = await message_collection.delete_one({"_id": id})
+async def delete(msg_id):
+    result = await message_collection.delete_one({"_id": msg_id})
     return result.deleted_count == 1

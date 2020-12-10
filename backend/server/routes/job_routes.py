@@ -7,15 +7,15 @@ from fastapi.responses import Response
 from typing import List, Optional
 from pydantic import UUID4
 
-import mvp.server.actions.job_actions as job_actions
-import mvp.server.actions.todo_actions as todo_actions
-import mvp.server.actions.message_actions as message_actions
+import backend.server.actions.job_actions as job_actions
+import backend.server.actions.todo_actions as todo_actions
+import backend.server.actions.message_actions as message_actions
 
 
-from mvp.server.models.job_models import Job, JobCreate, JobUpdate
-from mvp.server.models.todo_models import Todo, TodoCreate, TodoUpdate
-from mvp.server.models.message_models import Message, MessageCreate, MessageUpdate
-from mvp.server.models.user_models import User
+from backend.server.models.job_models import Job, JobCreate, JobUpdate
+from backend.server.models.todo_models import Todo, TodoCreate, TodoUpdate
+from backend.server.models.message_models import Message, MessageCreate, MessageUpdate
+from backend.server.models.user_models import User
 from .user_routes import fastapi_users
 
 
