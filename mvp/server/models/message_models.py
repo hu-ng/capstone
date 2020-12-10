@@ -1,5 +1,4 @@
 from pydantic import UUID4, Field
-from datetime import datetime
 from .mongo_base_model import MongoModel
 import uuid
 

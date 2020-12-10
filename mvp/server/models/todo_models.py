@@ -1,6 +1,5 @@
 from pydantic import UUID4, Field
 from datetime import datetime
-from typing import Optional
 from .mongo_base_model import MongoModel
 import uuid
 

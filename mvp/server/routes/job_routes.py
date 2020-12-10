@@ -29,12 +29,12 @@ async def get_all_jobs(user: User = Depends(fastapi_users.get_current_active_use
 
 
 # Get a single job for this user --> The id type here might be wrong
-@router.get("/{id}", response_description="Return one job based on id", response_model=Job)
-async def get_job(id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
-    job = await job_actions.get_one(id, user.id)
+@router.get("/{job_id}", response_description="Return one job based on id", response_model=Job)
+async def get_job(job_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
+    job = await job_actions.get_one(job_id, user.id)
     if job:
         return job
-    raise HTTPException(status_code=404, detail=f"Job {id} not found")
+    raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
 
 
 # Create a new job for this user
@@ -49,27 +49,27 @@ async def create_job(job: JobCreate, user: User = Depends(fastapi_users.get_curr
 
 
 # Update a connection for this user
-@router.put("/{id}", response_description="Return the job that was changed", response_model=Job)
-async def update_job(id: UUID4, data: JobUpdate, user: User = Depends(fastapi_users.get_current_active_user)):
-    job = await job_actions.get_one(id, user.id)
+@router.put("/{job_id}", response_description="Return the job that was changed", response_model=Job)
+async def update_job(job_id: UUID4, data: JobUpdate, user: User = Depends(fastapi_users.get_current_active_user)):
+    job = await job_actions.get_one(job_id, user.id)
 
     if job:
-        updated_job = await job_actions.update(id, data)
+        updated_job = await job_actions.update(job_id, data)
         return updated_job
     
-    raise HTTPException(status_code=404, detail=f"Job {id} not found, can't update job")
+    raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't update job")
 
 
 # Delete the connection for this user
-@router.delete("/{id}", response_description="Delete a job", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_job(id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
-    job = await job_actions.get_one(id, user.id)
+@router.delete("/{job_id}", response_description="Delete a job", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_job(job_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
+    job = await job_actions.get_one(job_id, user.id)
 
     if job:
-        result = await job_actions.delete(id)
+        await job_actions.delete(job_id)
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     
-    raise HTTPException(status_code=404, detail=f"Job {id} not found, can't delete job")
+    raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't delete job")
 
 
 
