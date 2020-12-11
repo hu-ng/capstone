@@ -18,6 +18,8 @@ import {
 
 import axios from "axios";
 
+import { useDispatch } from "react-redux";
+
 const StatusList = {
   Added: "0",
   Applied: "1",
@@ -26,7 +28,7 @@ const StatusList = {
   Rejected: "4",
 };
 
-const JobForm = (props) => {
+const AddJobForm = (props) => {
   const { open, setOpenForm } = props;
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
@@ -35,6 +37,8 @@ const JobForm = (props) => {
   const [postedDate, setPostedDate] = useState(new Date());
   const [status, setStatus] = useState("0");
   const [error, setError] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleDateChange = (date) => {
     setPostedDate(date);
@@ -73,6 +77,7 @@ const JobForm = (props) => {
         setError(false);
         const result = await axios.post("/jobs", requestBody);
         handleClose();
+        dispatch({ type: "REFRESH" });
       } catch (error) {
         setError(true);
         if (error.response) {
@@ -198,4 +203,4 @@ const JobForm = (props) => {
   );
 };
 
-export default JobForm;
+export default AddJobForm;

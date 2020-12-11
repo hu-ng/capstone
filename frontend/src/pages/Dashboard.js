@@ -11,7 +11,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
-import JobForm from "../components/JobForm";
+import JobForm from "../components/AddJobForm";
+import JobDetail from "../components/JobDetail";
+
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles({
   table: {
@@ -22,11 +25,14 @@ const useStyles = makeStyles({
 function Dashboard() {
   const { authTokens } = useAuth();
   const [jobs, setJobs] = useState([]);
-  const [jobSelected, setJobSelected] = useState("");
   const [jobHovered, setJobHovered] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+
+  const refresh = useSelector((state) => state.refresh);
+  const selectedJob = useSelector((state) => state.selectedJob);
+  const dispatch = useDispatch();
 
   axios.defaults.headers.common = {
     Authorization: `Bearer ${authTokens.access_token}`,
@@ -42,16 +48,21 @@ function Dashboard() {
     }
   };
 
+  // Get job object matching the id
+  const getJobData = (id) => {
+    return jobs.find((job) => job.id === id);
+  };
+
   // Select a job
-  const selectJob = (e, jobId) => {
-    if (jobId === jobSelected) {
-      setJobSelected("");
+  const onJobSelect = (e, jobId) => {
+    if (selectedJob && jobId === selectedJob.id) {
+      dispatch({ type: "SET_JOB", job: null });
     } else {
-      setJobSelected(jobId);
+      dispatch({ type: "SET_JOB", job: getJobData(jobId) });
     }
   };
 
-  // Add a job
+  // Open form to add a new job
   const openJobForm = (e) => {
     setOpenForm(true);
   };
@@ -59,7 +70,7 @@ function Dashboard() {
   // Fetch jobs
   const fetchJobs = async () => {
     try {
-      console.log("fetch");
+      console.log("fetch jobs");
       setIsError(false);
       setIsLoading(true);
 
@@ -69,21 +80,24 @@ function Dashboard() {
       setIsLoading(false);
     } catch (error) {
       setIsError(true);
-      console.log(error);
+      if (error.response) {
+        console.log(error.response.data);
+      }
+      console.log(error.response);
     }
   };
 
-  // hook to fetch data on component mount and when form is closed
+  // Hook to fetch data on component mount and when form is closed
   useEffect(() => {
     fetchJobs();
-  }, [openForm]);
+  }, [refresh]);
 
   return (
     <div>
       {isError && <div>Something went wrong ...</div>}
       {isLoading && <div>Loading...</div>}
 
-      <Grid container spacing={5} className="pt-5">
+      <Grid container spacing={5} className="pt-5 px-4">
         {/* List of jobs */}
         <Grid item xs={5}>
           <Grid container>
@@ -114,8 +128,8 @@ function Dashboard() {
                 {jobs.map((job) => (
                   <TableRow
                     key={job.id}
-                    onClick={(e) => selectJob(e, job.id)}
-                    selected={job.id === jobSelected}
+                    onClick={(e) => onJobSelect(e, job.id)}
+                    selected={selectedJob ? job.id === selectedJob.id : false}
                     onMouseEnter={(e) => setJobHovered(job.id)}
                     omMouseLeave={(e) => setJobHovered("")}
                     hover={job.id === jobHovered}
@@ -139,7 +153,11 @@ function Dashboard() {
         </Grid>
 
         {/* Individual job views */}
-        <Grid item xs={7}></Grid>
+        {selectedJob && (
+          <Grid item xs={7}>
+            <JobDetail></JobDetail>
+          </Grid>
+        )}
       </Grid>
     </div>
   );

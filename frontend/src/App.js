@@ -8,6 +8,9 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import NavBar from "./components/NavBar";
 import { AuthContext } from "./context/auth";
+import { Provider } from "react-redux";
+import store from "./store";
+
 import axios from "axios";
 
 // Axios configs
@@ -25,17 +28,19 @@ function App(props) {
 
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
-      <Router>
-        <div>
-          <NavBar></NavBar>
+      <Provider store={store}>
+        <Router>
+          <div>
+            <NavBar></NavBar>
 
-          {/* Routes */}
-          <Route exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <PrivateRoute path="/dashboard" component={Dashboard} />
-        </div>
-      </Router>
+            {/* Routes */}
+            <Route exact path="/" component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={Signup} />
+            <PrivateRoute path="/dashboard" component={Dashboard} />
+          </div>
+        </Router>
+      </Provider>
     </AuthContext.Provider>
   );
 }
