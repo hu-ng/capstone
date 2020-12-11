@@ -1,7 +1,5 @@
 // Redux settings
 
-// TODO: Add the option to take saved debts from localstorage
-
 import { createStore } from "redux";
 import update from "immutability-helper";
 

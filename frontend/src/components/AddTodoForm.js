@@ -13,35 +13,23 @@ import {
   Button,
   DialogActions,
   TextField,
-  MenuItem,
 } from "@material-ui/core";
 
 import axios from "axios";
 
 import { useDispatch } from "react-redux";
 
-const StatusList = {
-  Added: "0",
-  Applied: "1",
-  Interviewing: "2",
-  Offer: "3",
-  Rejected: "4",
-};
-
-const AddJobForm = (props) => {
-  const { open, setOpenForm } = props;
+// TODO: Fix local and UTC issue
+const AddTodoForm = (props) => {
+  const { open, handler } = props;
   const [title, setTitle] = useState("");
-  const [company, setCompany] = useState("");
-  const [description, setDescription] = useState("");
-  const [posting, setPosting] = useState("");
-  const [postedDate, setPostedDate] = useState(new Date());
-  const [status, setStatus] = useState("0");
+  const [dueDate, setDueDate] = useState(new Date());
   const [error, setError] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleDateChange = (date) => {
-    setPostedDate(date);
+    setDueDate(date);
   };
 
   const handleInputChange = (e, func) => {
@@ -49,33 +37,30 @@ const AddJobForm = (props) => {
   };
 
   const handleClose = () => {
-    setOpenForm(false);
+    handler(false);
   };
 
   const resetForm = () => {
     setTitle("");
-    setCompany("");
-    setDescription("");
-    setPosting("");
-    setPostedDate(new Date());
-    setStatus("0");
+    setDueDate(new Date());
   };
 
   const onSubmit = () => {
     // Form request body
     const requestBody = {
       title: title || null,
-      description: description || null,
-      company: company || null,
-      status,
-      posted_date: postedDate.toISOString(),
+      due_date: dueDate.toISOString(),
     };
 
     // Post data to the back-end
-    const addJob = async () => {
+    const addTodo = async () => {
       try {
         setError(false);
-        const result = await axios.post("/jobs/", requestBody);
+        const result = await axios.post(
+          `/jobs/${props.job.id}/todos/`,
+          requestBody
+        );
+        dispatch({ type: "SET_JOB", job: result.data });
         handleClose();
         dispatch({ type: "REFRESH" });
       } catch (error) {
@@ -87,7 +72,7 @@ const AddJobForm = (props) => {
     };
 
     // Call function to add job
-    addJob();
+    addTodo();
 
     // Reset the form
     resetForm();
@@ -95,7 +80,7 @@ const AddJobForm = (props) => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
-      <DialogTitle>Add a New Position</DialogTitle>
+      <DialogTitle>Add a new Todo</DialogTitle>
       {/* Form Content */}
       <DialogContent>
         <Grid container spacing={3}>
@@ -103,7 +88,7 @@ const AddJobForm = (props) => {
             {error && <div>Something went wrong...</div>}
             <form>
               <Grid container spacing={3}>
-                {/* Job title */}
+                {/* Todo title */}
                 <Grid item xs={6}>
                   <TextField
                     required
@@ -111,41 +96,7 @@ const AddJobForm = (props) => {
                     value={title}
                     onChange={(e) => handleInputChange(e, setTitle)}
                     fullWidth
-                  />
-                </Grid>
-
-                {/* Company */}
-                <Grid item xs={6}>
-                  <TextField
-                    required
-                    label="Company"
-                    value={company}
-                    onChange={(e) => {
-                      handleInputChange(e, setCompany);
-                    }}
-                    fullWidth
-                  />
-                </Grid>
-
-                {/* Job description */}
-                <Grid item xs={12}>
-                  <TextField
-                    label="Description"
-                    value={description}
-                    onChange={(e) => handleInputChange(e, setDescription)}
-                    fullWidth
-                    multiline
-                    rows={5}
-                  />
-                </Grid>
-
-                {/* Posting URL */}
-                <Grid item xs={12}>
-                  <TextField
-                    label="Posting URL"
-                    value={posting}
-                    onChange={(e) => handleInputChange(e, setPosting)}
-                    fullWidth
+                    margin="dense"
                   />
                 </Grid>
 
@@ -153,37 +104,20 @@ const AddJobForm = (props) => {
                 <Grid item xs={6}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
+                      required
                       disableToolbar
                       fullWidth
                       variant="inline"
                       format="MM/dd/yyyy"
                       margin="dense"
-                      label="Posted Date"
-                      value={postedDate}
+                      label="Due Date"
+                      value={dueDate}
                       onChange={handleDateChange}
                       KeyboardButtonProps={{
                         "aria-label": "change date",
                       }}
                     />
                   </MuiPickersUtilsProvider>
-                </Grid>
-
-                {/* Status */}
-                <Grid item xs={6}>
-                  <TextField
-                    select
-                    label="Status"
-                    value={status}
-                    onChange={(e) => handleInputChange(e, setStatus)}
-                    fullWidth
-                    margin="dense"
-                  >
-                    {Object.entries(StatusList).map(([key, value]) => (
-                      <MenuItem key={key} value={value}>
-                        {key}
-                      </MenuItem>
-                    ))}
-                  </TextField>
                 </Grid>
               </Grid>
             </form>
@@ -204,4 +138,4 @@ const AddJobForm = (props) => {
   );
 };
 
-export default AddJobForm;
+export default AddTodoForm;

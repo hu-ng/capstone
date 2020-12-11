@@ -75,7 +75,7 @@ function Dashboard() {
       setIsLoading(true);
 
       // Get data
-      const result = await axios.get("/jobs");
+      const result = await axios.get("/jobs/");
       setJobs(result.data);
       setIsLoading(false);
     } catch (error) {

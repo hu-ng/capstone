@@ -2,6 +2,8 @@ import { Typography, AppBar, Tabs, Tab, Box } from "@material-ui/core";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
+import Todos from "./Todos";
+
 // A tab panel
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,7 +62,9 @@ function JobTabs() {
       </TabPanel>
 
       {/* Todos */}
-      <TabPanel value={value} index={1}></TabPanel>
+      <TabPanel value={value} index={1}>
+        <Todos></Todos>
+      </TabPanel>
 
       {/* Messages */}
       <TabPanel value={value} index={2}></TabPanel>

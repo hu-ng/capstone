@@ -139,7 +139,7 @@ async def update_todo(job_id: UUID4, todo_id: UUID4, todo: TodoUpdate, user: Use
     raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't update todo")
 
 
-@router.delete("/{job_id}/todos/{todo_id}", response_description="Delete this todo", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{job_id}/todos/{todo_id}", response_description="Delete this todo", response_model=Job)
 async def delete_todo(job_id: UUID4, todo_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
     # Get the job object
     job = await job_actions.get_one(job_id, user.id)
@@ -156,9 +156,9 @@ async def delete_todo(job_id: UUID4, todo_id: UUID4, user: User = Depends(fastap
             # Remove reference from jobs
             new_job_data = job.mongo()
             new_job_data["todos"].remove(todo_id)
-            await job_actions.update(job_id, JobUpdate(**new_job_data))         
+            new_job = await job_actions.update(job_id, JobUpdate(**new_job_data))         
 
-            return Response(status_code=status.HTTP_204_NO_CONTENT)
+            return new_job
         # If not, return error
         else:
             raise HTTPException(status_code=404, detail=f"Todo {todo_id} not found")

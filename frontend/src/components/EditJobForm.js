@@ -51,7 +51,6 @@ const EditJobForm = (props) => {
 
   const handleClose = () => {
     handler(false);
-    dispatch({ type: "REFRESH" });
   };
 
   const resetForm = () => {
@@ -77,8 +76,9 @@ const EditJobForm = (props) => {
     const editJob = async () => {
       try {
         setError(false);
-        const result = await axios.put(`/jobs/${job.id}`, requestBody);
+        const result = await axios.put(`/jobs/${job.id}/`, requestBody);
         dispatch({ type: "SET_JOB", job: result.data });
+        dispatch({ type: "REFRESH" });
         handleClose();
       } catch (error) {
         setError(true);
@@ -182,6 +182,7 @@ const EditJobForm = (props) => {
                     value={status}
                     onChange={(e) => handleInputChange(e, setStatus)}
                     fullWidth
+                    margin="dense"
                   >
                     {Object.entries(StatusList).map(([key, value]) => (
                       <MenuItem key={key} value={value}>
