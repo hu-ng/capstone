@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Todos from "./Todos";
+import Messages from "./Messages";
 
 // A tab panel
 function TabPanel(props) {
@@ -67,7 +68,9 @@ function JobTabs() {
       </TabPanel>
 
       {/* Messages */}
-      <TabPanel value={value} index={2}></TabPanel>
+      <TabPanel value={value} index={2}>
+        <Messages></Messages>
+      </TabPanel>
     </div>
   );
 }

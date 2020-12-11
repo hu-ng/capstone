@@ -147,6 +147,7 @@ const Todos = () => {
   const job = useSelector((state) => state.selectedJob);
   const [todos, setTodos] = useState([]);
   const [openAddTodo, setOpenAddTodo] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const onAddTodo = () => {
     setOpenAddTodo(true);
@@ -154,8 +155,10 @@ const Todos = () => {
 
   const fetchTodos = async () => {
     try {
+      setLoading(true);
       const result = await axios.get(`/jobs/${job.id}/todos/`);
       setTodos(result.data);
+      setLoading(false);
     } catch (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -180,6 +183,7 @@ const Todos = () => {
         ></AddTodoForm>
       </Grid>
       <Grid item xs={12}>
+        {isLoading && <div>Loading...</div>}
         <TodoList todos={todos} job={job}></TodoList>
       </Grid>
     </Grid>
