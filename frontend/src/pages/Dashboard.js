@@ -43,14 +43,15 @@ function Dashboard() {
   };
 
   // Query hook to fetch data
-  const { isLoading, isError, data, error } = useQuery("jobs", fetchJobs);
+  const { isLoading, isError, data } = useQuery("jobs", fetchJobs);
 
   const selectedId = useSelector((state) => state.selectedId);
   const dispatch = useDispatch();
 
   const classes = useStyles();
 
-  // Helper function turning date to str
+  // Helper function turning date to str.
+  // Server UTC is turned into local time automatically
   const dateToStr = (str) => {
     if (str) {
       const date = new Date(str);

@@ -75,6 +75,7 @@ const AddJobForm = (props) => {
       description: description || null,
       company: company || null,
       status,
+      // toISOString create an iso string automatically from the chosen date
       posted_date: postedDate.toISOString(),
     };
 

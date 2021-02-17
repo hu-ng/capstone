@@ -20,14 +20,26 @@ axios.defaults.baseURL = `http://${window.location.hostname}:${8000}`;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 function App(props) {
-  const existingTokens = JSON.parse(localStorage.getItem("tokens"));
+  const existingTokens = JSON.parse(localStorage.getItem("jobfulTokens"));
   const [authTokens, setAuthTokens] = useState(existingTokens);
   const queryClient = new QueryClient();
 
   const setTokens = (data) => {
-    localStorage.setItem("tokens", JSON.stringify(data));
+    localStorage.setItem("jobfulTokens", JSON.stringify(data));
     setAuthTokens(data);
   };
+
+  // Logout if 401
+  axios.interceptors.response.use(undefined, function clearAuthTokens(err) {
+    if (
+      err.response.status === 401 ||
+      err.response.data.message === "401 Unauthorized"
+    ) {
+      setTokens("");
+    }
+
+    return Promise.reject(err);
+  });
 
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
@@ -35,6 +47,7 @@ function App(props) {
         <Provider store={store}>
           <Router>
             <div>
+              {/* Navbar */}
               <NavBar></NavBar>
 
               {/* Routes */}
