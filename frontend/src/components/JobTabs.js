@@ -1,8 +1,7 @@
 import { Typography, AppBar, Tabs, Tab, Box } from "@material-ui/core";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 
-import Todos from "./Todos";
+import TodoTab from "./TodoTab";
 import Messages from "./Messages";
 
 // A tab panel
@@ -35,9 +34,9 @@ function a11yProps(index) {
 }
 
 // Main component
-function JobTabs() {
+function JobTabs(props) {
   const [value, setValue] = useState(0);
-  const job = useSelector((state) => state.selectedJob);
+  const { job } = props;
 
   const handleTabChange = (_, newValue) => {
     setValue(newValue);
@@ -64,7 +63,7 @@ function JobTabs() {
 
       {/* Todos */}
       <TabPanel value={value} index={1}>
-        <Todos></Todos>
+        <TodoTab job={job}></TodoTab>
       </TabPanel>
 
       {/* Messages */}

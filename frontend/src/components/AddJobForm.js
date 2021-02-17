@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -16,10 +19,6 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-import axios from "axios";
-
-import { useDispatch } from "react-redux";
-
 const StatusList = {
   Added: "0",
   Applied: "1",
@@ -36,9 +35,17 @@ const AddJobForm = (props) => {
   const [posting, setPosting] = useState("");
   const [postedDate, setPostedDate] = useState(new Date());
   const [status, setStatus] = useState("0");
-  const [error, setError] = useState(false);
+  const queryClient = useQueryClient();
 
-  const dispatch = useDispatch();
+  const createJobMutation = useMutation(
+    (requestBody) => axios.post("/jobs/", requestBody),
+    {
+      // On success, invalidate the "jobs" query and run again
+      onSuccess: () => {
+        queryClient.invalidateQueries("jobs");
+      },
+    }
+  );
 
   const handleDateChange = (date) => {
     setPostedDate(date);
@@ -71,27 +78,14 @@ const AddJobForm = (props) => {
       posted_date: postedDate.toISOString(),
     };
 
-    // Post data to the back-end
-    const addJob = async () => {
-      try {
-        setError(false);
-        const result = await axios.post("/jobs/", requestBody);
-        handleClose();
-        dispatch({ type: "REFRESH" });
-      } catch (error) {
-        setError(true);
-        if (error.response) {
-          console.log(error.response.data);
-        }
-      }
-    };
-
-    // Call function to add job
-    addJob();
-
-    // Reset the form
-    resetForm();
+    createJobMutation.mutate(requestBody);
   };
+
+  // Resets the form and the mutation whenever the form is open
+  useEffect(() => {
+    resetForm();
+    createJobMutation.reset();
+  }, [open]);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
@@ -100,7 +94,11 @@ const AddJobForm = (props) => {
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {error && <div>Something went wrong...</div>}
+            {/* If error, indicate error */}
+            {createJobMutation.isError && <div>Something went wrong...</div>}
+
+            {/* If success, close the form */}
+            {createJobMutation.isSuccess && handleClose()}
             <form>
               <Grid container spacing={3}>
                 {/* Job title */}

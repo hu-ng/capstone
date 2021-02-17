@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -15,18 +18,21 @@ import {
   TextField,
 } from "@material-ui/core";
 
-import axios from "axios";
-
-import { useDispatch } from "react-redux";
-
-// TODO: Fix local and UTC issue
+// TODO: Fix time issue
 const AddTodoForm = (props) => {
-  const { open, handler } = props;
+  const { open, handler, jobId } = props;
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState(new Date());
-  const [error, setError] = useState(false);
 
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+  const addTodoMutation = useMutation(
+    (requestBody) => axios.post(`/jobs/${jobId}/todos/`, requestBody),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("jobs");
+      },
+    }
+  );
 
   const handleDateChange = (date) => {
     setDueDate(date);
@@ -52,31 +58,18 @@ const AddTodoForm = (props) => {
       due_date: dueDate.toISOString(),
     };
 
-    // Post data to the back-end
-    const addTodo = async () => {
-      try {
-        setError(false);
-        const result = await axios.post(
-          `/jobs/${props.job.id}/todos/`,
-          requestBody
-        );
-        dispatch({ type: "SET_JOB", job: result.data });
-        handleClose();
-        dispatch({ type: "REFRESH" });
-      } catch (error) {
-        setError(true);
-        if (error.response) {
-          console.log(error.response.data);
-        }
-      }
-    };
-
     // Call function to add job
-    addTodo();
+    addTodoMutation.mutate(requestBody);
 
     // Reset the form
     resetForm();
   };
+
+  // Resets form and mutation when open is changed
+  useEffect(() => {
+    resetForm();
+    addTodoMutation.reset();
+  }, [open]);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
@@ -85,7 +78,12 @@ const AddTodoForm = (props) => {
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {error && <div>Something went wrong...</div>}
+            {/* If error, indicate error */}
+            {addTodoMutation.isError && <div>Something went wrong...</div>}
+
+            {/* If success, close the form */}
+            {addTodoMutation.isSuccess && handleClose()}
+
             <form>
               <Grid container spacing={3}>
                 {/* Todo title */}

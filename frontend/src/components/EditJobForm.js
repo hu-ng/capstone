@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -15,9 +18,6 @@ import {
   TextField,
   MenuItem,
 } from "@material-ui/core";
-
-import axios from "axios";
-import { useDispatch } from "react-redux";
 
 const StatusList = {
   Added: "0",
@@ -37,9 +37,18 @@ const EditJobForm = (props) => {
     job.posted_date ? new Date(job.posted_date) : null
   );
   const [status, setStatus] = useState(job.status);
-  const [error, setError] = useState(false);
 
-  const dispatch = useDispatch();
+  // React query
+  const queryClient = useQueryClient();
+  const editJobMutation = useMutation(
+    (requestBody) => axios.put(`/jobs/${job.id}/`, requestBody),
+    {
+      onSuccess: () => {
+        // Invalidate the main query
+        queryClient.invalidateQueries("jobs");
+      },
+    }
+  );
 
   const handleDateChange = (date) => {
     setPostedDate(date);
@@ -72,27 +81,13 @@ const EditJobForm = (props) => {
       posted_date: postedDate ? postedDate.toISOString() : null,
     };
 
-    // Post data to the back-end
-    const editJob = async () => {
-      try {
-        setError(false);
-        const result = await axios.put(`/jobs/${job.id}/`, requestBody);
-        dispatch({ type: "SET_JOB", job: result.data });
-        dispatch({ type: "REFRESH" });
-        handleClose();
-      } catch (error) {
-        setError(true);
-        if (error.response) {
-          console.log(error.response.data);
-        }
-      }
-    };
-
-    // Call function to add job
-    editJob();
+    editJobMutation.mutate(requestBody);
 
     // Reset the form
     resetForm();
+
+    // Close the form
+    handleClose();
   };
 
   useEffect(() => {
@@ -106,7 +101,7 @@ const EditJobForm = (props) => {
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {error && <div>Something went wrong...</div>}
+            {editJobMutation.isError && <div>Something went wrong...</div>}
             <form>
               <Grid container spacing={3}>
                 {/* Job title */}

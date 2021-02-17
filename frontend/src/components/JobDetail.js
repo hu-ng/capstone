@@ -1,10 +1,12 @@
-import { Paper, Grid, Typography, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
 import axios from "axios";
+
+import { Paper, Grid, Typography, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
 import EditJobForm from "./EditJobForm";
 import JobTabs from "./JobTabs";
+import { useMutation, useQueryClient } from "react-query";
 
 const useStyles = makeStyles({
   paper: {
@@ -13,31 +15,30 @@ const useStyles = makeStyles({
 });
 
 // Main
-const JobDetail = () => {
+const JobDetail = (props) => {
+  const { job } = props;
   const [editForm, setEditForm] = useState(false);
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const job = useSelector((state) => state.selectedJob);
 
+  // React Query
+  const queryClient = useQueryClient();
+  const deleteJobMutation = useMutation(
+    (jobId) => axios.delete(`/jobs/${jobId}`),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("jobs", { exact: true });
+      },
+    }
+  );
+
+  // Helper to control open state of edit form
   const openEditForm = () => {
     setEditForm(true);
   };
 
   // Delete Job
   const onJobDelete = () => {
-    const deleteJob = async () => {
-      try {
-        await axios.delete(`/jobs/${job.id}`);
-        dispatch({ type: "SET_JOB", job: null });
-        dispatch({ type: "REFRESH" });
-      } catch (error) {
-        if (error.response) {
-          console.log(error.response.data);
-        }
-      }
-    };
-
-    deleteJob();
+    deleteJobMutation.mutate(job.id);
   };
 
   // TODO: Change things on the backend instead
@@ -79,7 +80,7 @@ const JobDetail = () => {
       </Grid>
 
       {/* Tabs */}
-      <JobTabs></JobTabs>
+      <JobTabs job={job}></JobTabs>
     </Paper>
   );
 };

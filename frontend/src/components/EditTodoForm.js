@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -15,19 +17,11 @@ import {
   TextField,
 } from "@material-ui/core";
 
-import axios from "axios";
-
-import { useSelector, useDispatch } from "react-redux";
-
 // TODO: Local and UTC date issue
 const EditTodoForm = (props) => {
-  const { open, handler, todo } = props;
+  const { open, handler, todo, editTodoMutation } = props;
   const [title, setTitle] = useState(todo.title);
   const [dueDate, setDueDate] = useState(new Date(todo.due_date));
-  const [error, setError] = useState(false);
-
-  const job = useSelector((state) => state.selectedJob);
-  const dispatch = useDispatch();
 
   const handleDateChange = (date) => {
     setDueDate(date);
@@ -54,27 +48,11 @@ const EditTodoForm = (props) => {
       due_date: dueDate.toISOString(),
     };
 
-    // Post data to the back-end
-    const editTodo = async () => {
-      try {
-        setError(false);
-        const result = await axios.put(
-          `/jobs/${job.id}/todos/${todo.id}/`,
-          requestBody
-        );
-        dispatch({ type: "SET_JOB", job: result.data.job });
-        dispatch({ type: "REFRESH" });
-        handleClose();
-      } catch (error) {
-        setError(true);
-        if (error.response) {
-          console.log(error.respone.data);
-        }
-        console.log(error);
-      }
-    };
-    // Call function to add job
-    editTodo();
+    // Post data to the backend
+    editTodoMutation.mutate(requestBody);
+
+    // Close and reset the form
+    handleClose();
   };
 
   return (
@@ -84,7 +62,7 @@ const EditTodoForm = (props) => {
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {error && <div>Something went wrong...</div>}
+            {editTodoMutation.isError && <div>Something went wrong...</div>}
             <form>
               <Grid container spacing={3}>
                 {/* Todo title */}

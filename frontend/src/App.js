@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
@@ -20,6 +22,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 function App(props) {
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
   const [authTokens, setAuthTokens] = useState(existingTokens);
+  const queryClient = new QueryClient();
 
   const setTokens = (data) => {
     localStorage.setItem("tokens", JSON.stringify(data));
@@ -28,19 +31,22 @@ function App(props) {
 
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
-      <Provider store={store}>
-        <Router>
-          <div>
-            <NavBar></NavBar>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <Router>
+            <div>
+              <NavBar></NavBar>
 
-            {/* Routes */}
-            <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-            <PrivateRoute path="/dashboard" component={Dashboard} />
-          </div>
-        </Router>
-      </Provider>
+              {/* Routes */}
+              <Route exact path="/" component={Home} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={Signup} />
+              <PrivateRoute path="/dashboard" component={Dashboard} />
+            </div>
+          </Router>
+        </Provider>
+        <ReactQueryDevtools initialIsOpen />
+      </QueryClientProvider>
     </AuthContext.Provider>
   );
 }

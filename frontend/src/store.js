@@ -4,20 +4,12 @@ import { createStore } from "redux";
 import update from "immutability-helper";
 
 const InitState = {
-  refresh: true,
-  selectedJob: null,
+  selectedId: null,
 };
 
 const mainReducer = (state = InitState, action) => {
-  if (action.type === "REFRESH") {
-    const currState = state.refresh;
-    const newState = update(state, { refresh: { $set: !currState } });
-    console.log(newState);
-    return newState;
-  }
-
   if (action.type === "SET_JOB") {
-    const newState = update(state, { selectedJob: { $set: action.job } });
+    const newState = update(state, { selectedId: { $set: action.id } });
     return newState;
   }
 
