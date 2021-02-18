@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "Jobful Extension",
+  "description": "A tool to help you add jobs to the Jobful dashboard as you surf the web!",
+  "version": "0.0.1",
+
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Add position to Jobful"
+  },
+  "icons": {
+    "16": "jobful.png",
+    "48": "jobful.png",
+    "128": "jobful.png"
+  },
+  "content_security_policy": "script-src 'self' 'sha256-F8PdINHDndeQhOj8mD2vh+oGt++f3gFA4ALK3+8Ce04='; object-src 'self'",
+  "permissions": [
+    "http://*/*"
+  ]
+}
