@@ -25,6 +25,14 @@ const useStyles = makeStyles({
   },
 });
 
+const StatusList = {
+  0: "Added",
+  1: "Applied",
+  2: "Interviewing",
+  3: "Offer",
+  "-1": "Rejected",
+};
+
 function Dashboard() {
   const { authTokens } = useAuth();
   const [jobHovered, setJobHovered] = useState("");
@@ -129,7 +137,9 @@ function Dashboard() {
                         {job.company}
                       </TableCell>
                       <TableCell align="right">{job.title}</TableCell>
-                      <TableCell align="right">{job.status}</TableCell>
+                      <TableCell align="right">
+                        {StatusList[job.status]}
+                      </TableCell>
                       <TableCell align="right">
                         {dateToStr(job.added_date)}
                       </TableCell>

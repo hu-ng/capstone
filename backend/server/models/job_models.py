@@ -10,11 +10,11 @@ from .mongo_base_model import MongoModel
 import uuid
 
 class Status(str, Enum):
+    rejected = -1
     added = 0
     applied = 1
     interviewing = 2
     offer = 3
-    rejected = 4
 
 
 # Shared properties

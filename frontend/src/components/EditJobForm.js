@@ -24,7 +24,7 @@ const StatusList = {
   Applied: "1",
   Interviewing: "2",
   Offer: "3",
-  Rejected: "4",
+  Rejected: "-1",
 };
 
 const EditJobForm = (props) => {
@@ -80,6 +80,8 @@ const EditJobForm = (props) => {
       status,
       posted_date: postedDate ? postedDate.toISOString() : null,
     };
+
+    console.log(requestBody);
 
     editJobMutation.mutate(requestBody);
 

@@ -4,6 +4,7 @@ Provides helper functions to interact with the database
 
 from backend.server.database import jobs_collection
 from backend.server.models.job_models import JobInDB, JobCreate, JobUpdate
+import pymongo
 
 import backend.server.actions.todo_actions as todo_actions
 
@@ -13,6 +14,7 @@ async def get_all(user_id):
     cursor = jobs_collection.find({
         "user_id": { "$eq": user_id}
     })
+    cursor.sort("status", pymongo.DESCENDING)
     found_jobs = []
     async for job in cursor:
         found_jobs.append(JobInDB.from_mongo(job))

@@ -24,7 +24,7 @@ const StatusList = {
   Applied: "1",
   Interviewing: "2",
   Offer: "3",
-  Rejected: "4",
+  Rejected: "-1",
 };
 
 const AddJobForm = (props) => {

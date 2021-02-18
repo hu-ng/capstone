@@ -58,7 +58,7 @@ function JobTabs(props) {
 
       {/* Description */}
       <TabPanel value={value} index={0}>
-        {job.description}
+        <div style={{ whiteSpace: "pre-line" }}>{job.description}</div>
       </TabPanel>
 
       {/* Todos */}
