@@ -43,8 +43,14 @@ const JobDetail = (props) => {
 
   // TODO: Change things on the backend instead
   const statusToStr = (status) => {
-    const mapping = ["Added", "Applied", "Interviewing", "Offer", "Rejected"];
-    return mapping[Number(status)];
+    const mapping = {
+      0: "Added",
+      1: "Applied",
+      2: "Interviewing",
+      3: "Offer",
+      "-1": "Rejected",
+    };
+    return mapping[status];
   };
 
   return (
@@ -52,25 +58,41 @@ const JobDetail = (props) => {
       <Grid container spacing={2} className="pb-4">
         <Grid item xs={12}>
           <Grid container>
-            <Typography variant="h4" style={{ flexGrow: 1 }}>
-              {job.company} - {statusToStr(job.status)}
-            </Typography>
+            <Grid item xs={6}>
+              <Typography variant="h4">
+                {job.company} - {statusToStr(job.status)}
+              </Typography>
+            </Grid>
 
-            {/* Edit the job */}
-            <Button variant="contained" color="primary" onClick={openEditForm}>
-              Edit Job
-            </Button>
+            <Grid item xs={6}>
+              <div style={{ float: "right" }}>
+                {/* Edit the job */}
+                <span style={{ marginRight: 10 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={openEditForm}
+                  >
+                    Edit Job
+                  </Button>
+                </span>
 
-            <EditJobForm
-              open={editForm}
-              handler={setEditForm}
-              job={job}
-            ></EditJobForm>
+                {/* Delete the job */}
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={onJobDelete}
+                >
+                  Delete Job
+                </Button>
+              </div>
 
-            {/* Delete the job */}
-            <Button variant="contained" color="secondary" onClick={onJobDelete}>
-              Delete Job
-            </Button>
+              <EditJobForm
+                open={editForm}
+                handler={setEditForm}
+                job={job}
+              ></EditJobForm>
+            </Grid>
           </Grid>
         </Grid>
 

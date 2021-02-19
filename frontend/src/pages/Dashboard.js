@@ -16,8 +16,7 @@ import {
 
 import JobForm from "../components/AddJobForm";
 import JobDetail from "../components/JobDetail";
-
-import { useSelector, useDispatch } from "react-redux";
+import JobSearchBar from "../components/JobSearchBar";
 
 const useStyles = makeStyles({
   table: {
@@ -25,6 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
+// List of Status
 const StatusList = {
   0: "Added",
   1: "Applied",
@@ -37,7 +37,10 @@ function Dashboard() {
   const { authTokens } = useAuth();
   const [jobHovered, setJobHovered] = useState("");
   const [openForm, setOpenForm] = useState(false);
-  const [selectedIdx, setSelectedIdx] = useState(null);
+  const [selectedId, setSelectedId] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [jobsDisplay, setJobsDisplay] = useState([]);
+  const [jobsDefault, setJobsDefault] = useState([]);
 
   // Set authentication headers
   axios.defaults.headers.common = {
@@ -51,10 +54,12 @@ function Dashboard() {
   };
 
   // Query hook to fetch data
-  const { isLoading, isError, data } = useQuery("jobs", fetchJobs);
-
-  const selectedId = useSelector((state) => state.selectedId);
-  const dispatch = useDispatch();
+  const { isLoading, isError } = useQuery("jobs", fetchJobs, {
+    onSuccess: (data) => {
+      setJobsDisplay(data);
+      setJobsDefault(data);
+    },
+  });
 
   const classes = useStyles();
 
@@ -67,19 +72,12 @@ function Dashboard() {
     }
   };
 
-  // Helper function to get valid index
-  const getSelectedIdx = (currIdx, data) => {
-    return Math.min(currIdx, data.length - 1);
-  };
-
   // Select a job
-  const onJobSelect = (e, jobId, idx) => {
+  const onJobSelect = (_, jobId) => {
     if (selectedId && jobId === selectedId) {
-      setSelectedIdx(null);
-      dispatch({ type: "SET_JOB", id: null });
+      setSelectedId("");
     } else {
-      dispatch({ type: "SET_JOB", id: jobId });
-      setSelectedIdx(idx);
+      setSelectedId(jobId);
     }
   };
 
@@ -88,46 +86,74 @@ function Dashboard() {
     setOpenForm(true);
   };
 
+  // Handle the search bar
+  const handleSearchBarChange = (e) => {
+    const input = e.target.value;
+    setKeyword(input);
+    const filteredJobs = jobsDefault.filter((job) => {
+      return job.company.toLowerCase().includes(input.toLowerCase());
+    });
+    setJobsDisplay(filteredJobs);
+  };
+
+  // Get job based on ID
+  const getSelectedJob = (id) => {
+    if (!id) return;
+    const job = jobsDefault.find((job) => job.id === id);
+    return job ? job : setSelectedId("");
+  };
+
   return (
     <div>
       {isError && <div>Something went wrong ...</div>}
       {isLoading && <div>Loading...</div>}
-
       <Grid container spacing={5} className="pt-5 px-4">
-        {/* List of jobs */}
         <Grid item xs={5}>
-          <Grid container>
+          <Grid container className="py-3">
             <Typography
               variant="h4"
               style={{ display: "inline-block", flexGrow: 1 }}
             >
               Pipeline
             </Typography>
-
-            {/* Button to open form */}
-            <Button variant="contained" color="primary" onClick={openJobForm}>
-              New Job
-            </Button>
-
-            <JobForm open={openForm} setOpenForm={setOpenForm}></JobForm>
           </Grid>
-          <TableContainer component={Card}>
-            <Table className={classes.table} aria-label="Jobs Table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Company Name</TableCell>
-                  <TableCell align="right">Position</TableCell>
-                  <TableCell align="right">Status</TableCell>
-                  <TableCell align="right">Added Date</TableCell>
-                  <TableCell align="right">Posted Date</TableCell>
-                </TableRow>
-              </TableHead>
-              {data && (
+
+          <Grid container className="pb-3" alignItems="center">
+            {/* Button and form*/}
+            <Grid item xs={5}>
+              <Button variant="contained" color="primary" onClick={openJobForm}>
+                New Job
+              </Button>
+              <JobForm open={openForm} setOpenForm={setOpenForm}></JobForm>
+            </Grid>
+
+            {/* Search bar */}
+            <Grid item xs={7}>
+              <JobSearchBar
+                keyword={keyword}
+                handler={handleSearchBarChange}
+              ></JobSearchBar>
+            </Grid>
+          </Grid>
+
+          {/* List of jobs */}
+          <Grid container style={{ maxHeight: "75vh", overflowY: "scroll" }}>
+            <TableContainer component={Card}>
+              <Table className={classes.table} aria-label="Jobs Table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Company Name</TableCell>
+                    <TableCell align="right">Position</TableCell>
+                    <TableCell align="right">Status</TableCell>
+                    <TableCell align="right">Added Date</TableCell>
+                    <TableCell align="right">Posted Date</TableCell>
+                  </TableRow>
+                </TableHead>
                 <TableBody>
-                  {data.map((job, idx) => (
+                  {jobsDisplay.map((job) => (
                     <TableRow
                       key={job.id}
-                      onClick={(e) => onJobSelect(e, job.id, idx)}
+                      onClick={(e) => onJobSelect(e, job.id)}
                       selected={selectedId ? job.id === selectedId : false}
                       onMouseEnter={(e) => setJobHovered(job.id)}
                       omMouseLeave={(e) => setJobHovered("")}
@@ -149,17 +175,15 @@ function Dashboard() {
                     </TableRow>
                   ))}
                 </TableBody>
-              )}
-            </Table>
-          </TableContainer>
+              </Table>
+            </TableContainer>
+          </Grid>
         </Grid>
 
-        {/* Individual job views */}
-        {Number.isInteger(selectedIdx) && (
+        {/* Individual job view */}
+        {getSelectedJob(selectedId) && (
           <Grid item xs={7}>
-            <JobDetail
-              job={data[getSelectedIdx(selectedIdx, data)]}
-            ></JobDetail>
+            <JobDetail job={getSelectedJob(selectedId)}></JobDetail>
           </Grid>
         )}
       </Grid>
