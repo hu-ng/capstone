@@ -32,7 +32,6 @@ def test_valid_user_login(client, existing_user):
     """
     payload = {"username": existing_user["email"], "password": existing_user["password"]}
     response = client.post("/auth/jwt/login", data=payload)
-    print(response.json())
     assert response.status_code == 200
 
 
