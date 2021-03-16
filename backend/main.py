@@ -1,6 +1,5 @@
 """
-Main entry point to the app
-Function: starts the server
+Main entry point to the app. Finds the app instance and run it on the designated port.
 """
 
 import uvicorn

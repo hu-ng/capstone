@@ -1,5 +1,5 @@
 """
-Makes a connection to the database on the cloud, and initialize the variables that we need
+Makes a connection to the database on the cloud, and initialize the collections that we need
 """
 
 import motor.motor_asyncio
@@ -7,10 +7,13 @@ from backend import settings
 from .models.user_models import UserDB
 from fastapi_users.db import MongoDBUserDatabase
 
-MONGO_DETAILS = settings.MONGO_DETAILS
+# Grab the connection URL from settings.py
+MONGO_URL = settings.MONGO_MAIN if settings.ENV == "prod" else settings.MONGO_TEST
 
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS, uuidRepresentation="standard")
+# Open a Mongo instance with the URL
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL, uuidRepresentation="standard")
 
+# Selects the database we want to work with
 database = client.app
 
 # Users collection
