@@ -19,7 +19,7 @@ const TodoList = (props) => {
   return (
     <List className={classes.root}>
       {todoIds.map((todoId) => {
-        return <Todo jobId={jobId} todoId={todoId}></Todo>;
+        return <Todo jobId={jobId} todoId={todoId} key={todoId}></Todo>;
       })}
     </List>
   );
