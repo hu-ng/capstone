@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
-
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -19,6 +18,8 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
+import DatetimeUtils from "../utils/datetime";
+
 const StatusList = {
   Added: "0",
   Applied: "1",
@@ -27,6 +28,7 @@ const StatusList = {
   Rejected: "-1",
 };
 
+// This component is the pop up form to add a job
 const AddJobForm = (props) => {
   const { open, setOpenForm } = props;
   const [title, setTitle] = useState("");
@@ -75,8 +77,7 @@ const AddJobForm = (props) => {
       description: description || null,
       company: company || null,
       status,
-      // toISOString create an iso string automatically from the chosen date
-      posted_date: postedDate.toISOString(),
+      posted_date: DatetimeUtils.formatForDB(postedDate),
     };
 
     createJobMutation.mutate(requestBody);

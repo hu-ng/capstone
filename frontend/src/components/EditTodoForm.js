@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -16,11 +16,14 @@ import {
   TextField,
 } from "@material-ui/core";
 
-// TODO: Local and UTC date issue
+import DatetimeUtils from "../utils/datetime";
+
 const EditTodoForm = (props) => {
   const { open, handler, todo, editTodoMutation } = props;
   const [title, setTitle] = useState(todo.title);
-  const [dueDate, setDueDate] = useState(new Date(todo.due_date));
+  const [dueDate, setDueDate] = useState(
+    DatetimeUtils.parseDateFromDB(todo.due_date)
+  );
 
   const handleDateChange = (date) => {
     setDueDate(date);
@@ -32,27 +35,34 @@ const EditTodoForm = (props) => {
 
   const handleClose = () => {
     handler(false);
-    resetForm();
   };
 
   const resetForm = () => {
     setTitle(todo.title);
-    setDueDate(new Date(todo.due_date));
+    setDueDate(DatetimeUtils.parseDateFromDB(todo.due_date));
   };
 
   const onSubmit = () => {
     // Form request body
     const requestBody = {
       title: title || null,
-      due_date: dueDate.toISOString(),
+      due_date: DatetimeUtils.formatForDB(dueDate),
     };
 
     // Post data to the backend
     editTodoMutation.mutate(requestBody);
-
-    // Close and reset the form
-    handleClose();
   };
+
+  const extractErrorFromMutation = (mutation) => {
+    const error = mutation.error;
+    return error.response.data.detail[0].msg;
+  };
+
+  // Every time the form open or closes, reset the form and mutation
+  useEffect(() => {
+    resetForm();
+    editTodoMutation.reset();
+  }, [open]);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
@@ -61,7 +71,13 @@ const EditTodoForm = (props) => {
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {editTodoMutation.isError && <div>Something went wrong...</div>}
+            {/* If error, show the error */}
+            {editTodoMutation.isError && (
+              <div>{extractErrorFromMutation(editTodoMutation)}</div>
+            )}
+
+            {/* If success, close the form */}
+            {editTodoMutation.isSuccess && handleClose()}
             <form>
               <Grid container spacing={3}>
                 {/* Todo title */}

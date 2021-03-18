@@ -19,7 +19,7 @@ const TodoTab = (props) => {
         {/* Add a todo */}
         <IconButton color="primary" onClick={onAddTodo}>
           <AddCircleIcon />
-          <span class="pl-2">Add</span>
+          <span className="pl-2">Add</span>
         </IconButton>
         <AddTodoForm
           jobId={job.id}

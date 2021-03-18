@@ -18,7 +18,8 @@ import {
   TextField,
 } from "@material-ui/core";
 
-// TODO: Fix time issue
+import DatetimeUtils from "../utils/datetime";
+
 const AddTodoForm = (props) => {
   const { open, handler, jobId } = props;
   const [title, setTitle] = useState("");
@@ -55,7 +56,7 @@ const AddTodoForm = (props) => {
     // Form request body
     const requestBody = {
       title: title || null,
-      due_date: dueDate.toISOString(),
+      due_date: DatetimeUtils.formatForDB(dueDate),
     };
 
     // Call function to add job
@@ -83,7 +84,6 @@ const AddTodoForm = (props) => {
 
             {/* If success, close the form */}
             {addTodoMutation.isSuccess && handleClose()}
-
             <form>
               <Grid container spacing={3}>
                 {/* Todo title */}

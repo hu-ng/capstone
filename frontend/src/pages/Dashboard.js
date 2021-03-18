@@ -18,13 +18,15 @@ import JobForm from "../components/AddJobForm";
 import JobDetail from "../components/JobDetail";
 import JobSearchBar from "../components/JobSearchBar";
 
+import DatetimeUtils from "../utils/datetime";
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
 });
 
-// List of Status
+// List of job status
 const StatusList = {
   0: "Added",
   1: "Applied",
@@ -33,6 +35,7 @@ const StatusList = {
   "-1": "Rejected",
 };
 
+// Dashboard: the main view of the app. Contains the jobs table and the job detail view.
 function Dashboard() {
   const { authTokens } = useAuth();
   const [jobHovered, setJobHovered] = useState("");
@@ -47,7 +50,7 @@ function Dashboard() {
     Authorization: `Bearer ${authTokens.access_token}`,
   };
 
-  // Async axios call
+  // Async axios query
   const fetchJobs = async () => {
     const { data } = await axios.get("/jobs/");
     return data;
@@ -61,18 +64,10 @@ function Dashboard() {
     },
   });
 
+  // MaterialUI hook to inject styles
   const classes = useStyles();
 
-  // Helper function turning date to str.
-  // Server UTC is turned into local time automatically
-  const dateToStr = (str) => {
-    if (str) {
-      const date = new Date(str);
-      return date.toDateString();
-    }
-  };
-
-  // Select a job
+  // Select a job based on an id
   const onJobSelect = (_, jobId) => {
     if (selectedId && jobId === selectedId) {
       setSelectedId("");
@@ -81,12 +76,12 @@ function Dashboard() {
     }
   };
 
-  // Open form to add a new job
+  // Open the form to add a new job
   const openJobForm = (e) => {
     setOpenForm(true);
   };
 
-  // Handle the search bar
+  // Handler function for the search bar
   const handleSearchBarChange = (e) => {
     const input = e.target.value;
     setKeyword(input);
@@ -96,7 +91,7 @@ function Dashboard() {
     setJobsDisplay(filteredJobs);
   };
 
-  // Get job based on ID
+  // Get a job object based on id
   const getSelectedJob = (id) => {
     if (!id) return;
     const job = jobsDefault.find((job) => job.id === id);
@@ -167,10 +162,10 @@ function Dashboard() {
                         {StatusList[job.status]}
                       </TableCell>
                       <TableCell align="right">
-                        {dateToStr(job.added_date)}
+                        {DatetimeUtils.dateToStr(job.added_date)}
                       </TableCell>
                       <TableCell align="right">
-                        {dateToStr(job.posted_date)}
+                        {DatetimeUtils.dateToStr(job.posted_date)}
                       </TableCell>
                     </TableRow>
                   ))}

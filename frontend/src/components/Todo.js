@@ -16,6 +16,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditTodoForm from "./EditTodoForm";
 
+import DatetimeUtils from "../utils/datetime";
+
 async function getTodoById(jobId, todoId) {
   const { data } = await axios.get(`/jobs/${jobId}/todos/${todoId}`);
   return data;
@@ -107,7 +109,7 @@ function Todo(props) {
           <ListItemText
             id={labelId}
             primary={<Typography variant="body1">{data.title}</Typography>}
-            secondary={"Due: " + new Date(data.due_date).toDateString()}
+            secondary={"Due: " + DatetimeUtils.dateToStr(data.due_date)}
           />
           <ListItemSecondaryAction>
             {/* Open Edit Todo Form */}

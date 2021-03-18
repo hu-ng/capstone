@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
-
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -19,6 +18,8 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
+import DatetimeUtils from "../utils/datetime";
+
 const StatusList = {
   Added: "0",
   Applied: "1",
@@ -34,7 +35,7 @@ const EditJobForm = (props) => {
   const [description, setDescription] = useState(job.description);
   const [posting, setPosting] = useState(job.posting);
   const [postedDate, setPostedDate] = useState(
-    job.posted_date ? new Date(job.posted_date) : null
+    job.posted_date ? DatetimeUtils.parseDateFromDB(job.posted_date) : null
   );
   const [status, setStatus] = useState(job.status);
 
@@ -67,7 +68,9 @@ const EditJobForm = (props) => {
     setCompany(job.company);
     setDescription(job.description);
     setPosting(job.posting);
-    setPostedDate(job.posted_date ? new Date(job.posted_date) : null);
+    setPostedDate(
+      job.posted_date ? DatetimeUtils.parseDateFromDB(job.posted_date) : null
+    );
     setStatus(job.status);
   };
 
@@ -78,22 +81,18 @@ const EditJobForm = (props) => {
       description: description || null,
       company: company || null,
       status,
-      posted_date: postedDate ? postedDate.toISOString() : null,
+      posted_date: postedDate ? DatetimeUtils.formatForDB(postedDate) : null,
     };
-
-    console.log(requestBody);
 
     editJobMutation.mutate(requestBody);
 
     // Reset the form
     resetForm();
-
-    // Close the form
-    handleClose();
   };
 
   useEffect(() => {
     resetForm();
+    editJobMutation.reset();
   }, [job]);
 
   return (
@@ -103,7 +102,11 @@ const EditJobForm = (props) => {
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
+            {/* If error, show the error */}
             {editJobMutation.isError && <div>Something went wrong...</div>}
+
+            {/* If success, close the form */}
+            {editJobMutation.isSuccess && handleClose()}
             <form>
               <Grid container spacing={3}>
                 {/* Job title */}

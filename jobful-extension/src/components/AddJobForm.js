@@ -9,6 +9,8 @@ import {
 
 import { Grid, Button, TextField, MenuItem } from "@material-ui/core";
 
+import DatetimeUtils from "../utils/datetime";
+
 const StatusList = {
   Added: "0",
   Applied: "1",
@@ -50,8 +52,7 @@ const AddJobForm = (props) => {
       description: description || null,
       company: company || null,
       status,
-      // toISOString create an iso string automatically from the chosen date
-      posted_date: postedDate.toISOString(),
+      posted_date: DatetimeUtils.formatForDB(postedDate),
     };
 
     console.log(axios.defaults.headers.common);
