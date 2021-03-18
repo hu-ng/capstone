@@ -19,6 +19,7 @@ import {
 } from "@material-ui/core";
 
 import DatetimeUtils from "../utils/datetime";
+import extractErrorFromMutation from "../utils/error";
 
 const AddTodoForm = (props) => {
   const { open, handler, jobId } = props;
@@ -80,7 +81,9 @@ const AddTodoForm = (props) => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {/* If error, indicate error */}
-            {addTodoMutation.isError && <div>Something went wrong...</div>}
+            {addTodoMutation.isError && (
+              <div>{extractErrorFromMutation(addTodoMutation)}</div>
+            )}
 
             {/* If success, close the form */}
             {addTodoMutation.isSuccess && handleClose()}

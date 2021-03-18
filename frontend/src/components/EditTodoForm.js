@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 
 import DatetimeUtils from "../utils/datetime";
+import extractErrorFromMutation from "../utils/error";
 
 const EditTodoForm = (props) => {
   const { open, handler, todo, editTodoMutation } = props;
@@ -51,11 +52,6 @@ const EditTodoForm = (props) => {
 
     // Post data to the backend
     editTodoMutation.mutate(requestBody);
-  };
-
-  const extractErrorFromMutation = (mutation) => {
-    const error = mutation.error;
-    return error.response.data.detail[0].msg;
   };
 
   // Every time the form open or closes, reset the form and mutation

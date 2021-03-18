@@ -19,6 +19,7 @@ import {
 } from "@material-ui/core";
 
 import DatetimeUtils from "../utils/datetime";
+import extractErrorFromMutation from "../utils/error";
 
 const StatusList = {
   Added: "0",
@@ -97,7 +98,9 @@ const AddJobForm = (props) => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {/* If error, indicate error */}
-            {createJobMutation.isError && <div>Something went wrong...</div>}
+            {createJobMutation.isError && (
+              <div>{extractErrorFromMutation(createJobMutation)}</div>
+            )}
 
             {/* If success, close the form */}
             {createJobMutation.isSuccess && handleClose()}
