@@ -23,7 +23,7 @@ class JobBase(MongoModel):
     description: str = None
     company: str = None
     url: str = None
-    added_date: datetime = datetime.utcnow().isoformat()
+    added_date: datetime = datetime.utcnow()
     posted_date: datetime = None
     status: Status = Status.added
 
@@ -35,7 +35,7 @@ class JobCreate(JobBase):
     description: str = None
     company: str
     url: str = None
-    added_date: datetime = datetime.utcnow().isoformat()
+    added_date: datetime = datetime.utcnow()
     posted_date: datetime = None  # TODO: Error might be here
     status: Status = Status.added
     todos: List[UUID4] = []
