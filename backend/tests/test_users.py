@@ -1,7 +1,4 @@
 import pytest
-from backend.tests.common import client, test_db, existing_user
-import logging
-
 
 def test_create_new_user(client):
     """

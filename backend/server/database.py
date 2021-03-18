@@ -10,8 +10,11 @@ from fastapi_users.db import MongoDBUserDatabase
 # Grab the connection URL from settings.py
 MONGO_URL = settings.MONGO_MAIN if settings.ENV == "prod" else settings.MONGO_TEST
 
+def init_motor_client():
+    return motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL, uuidRepresentation="standard")
+
 # Open a Mongo instance with the URL
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL, uuidRepresentation="standard")
+client = init_motor_client()
 
 # Selects the database we want to work with
 database = client.app

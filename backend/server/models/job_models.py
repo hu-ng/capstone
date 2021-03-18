@@ -36,7 +36,7 @@ class JobCreate(JobBase):
     company: str
     url: str = None
     added_date: datetime = datetime.utcnow().isoformat()
-    posted_date: datetime = None
+    posted_date: datetime = None  # TODO: Error might be here
     status: Status = Status.added
     todos: List[UUID4] = []
     messages: List[UUID4] = []

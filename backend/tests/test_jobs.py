@@ -1,10 +1,10 @@
 import pytest
 from datetime import datetime, timedelta
+from httpx import AsyncClient
 
-from backend.tests.common import access_token, client, test_db, existing_user
 
 @pytest.fixture
-def sample_job():
+def sample_job_data():
     # There is no posted date here
     job = {
         "title": "SWE",
@@ -22,17 +22,17 @@ def invalid_inputs():
     return job
 
 
-def test_create_job_valid_inputs(access_token, client, sample_job):
+def test_create_job_valid_inputs(access_token, client, sample_job_data):
     """
     Test to create a job for a user using valid inputs
     """
-    response = client.post("/jobs/", json=sample_job, headers={"Authorization": access_token})
+    response = client.post("/jobs/", json=sample_job_data, headers={"Authorization": access_token})
     assert response.status_code == 200
     
     # Return data is correct
     data = response.json()
-    assert data["title"] == sample_job["title"]
-    assert data["company"] == sample_job["company"]
+    assert data["title"] == sample_job_data["title"]
+    assert data["company"] == sample_job_data["company"]
 
     # There is one job for the user
     get_jobs = client.get("/jobs/", headers={"Authorization": access_token})
@@ -47,25 +47,25 @@ def test_create_job_invalid_inputs(access_token, client, invalid_inputs):
     assert response.status_code == 422
 
 
-def test_create_multiple_jobs(access_token, client, sample_job):
+def test_create_multiple_jobs(access_token, client, sample_job_data):
     """
     Test to create multiple jobs
     """
     # Create two jobs using the same JSON for convenience
-    client.post("/jobs/", json=sample_job, headers={"Authorization": access_token})
-    client.post("/jobs/", json=sample_job, headers={"Authorization": access_token})
+    client.post("/jobs/", json=sample_job_data, headers={"Authorization": access_token})
+    client.post("/jobs/", json=sample_job_data, headers={"Authorization": access_token})
     
     # There should be two job for the user
     get_jobs = client.get("/jobs/", headers={"Authorization": access_token})
     assert len(get_jobs.json()) == 2
 
 
-def test_delete_job(access_token, client, sample_job):
+def test_delete_job(access_token, client, sample_job_data):
     """
     Test to delete a job
     """
     # Create a job
-    response = client.post("/jobs/", json=sample_job, headers={"Authorization": access_token})
+    response = client.post("/jobs/", json=sample_job_data, headers={"Authorization": access_token})
     response = response.json()
     job_id = response["id"]
 
@@ -78,12 +78,12 @@ def test_delete_job(access_token, client, sample_job):
     assert len(get_jobs.json()) == 0
 
 
-def test_update_job(access_token, client, sample_job):
+def test_update_job(access_token, client, sample_job_data):
     """
     Test to update an existing job with new data
     """
     # Create a job, get the id
-    response = client.post("/jobs/", json=sample_job, headers={"Authorization": access_token}).json()
+    response = client.post("/jobs/", json=sample_job_data, headers={"Authorization": access_token}).json()
     job_id = response["id"]
     
     posted_date = datetime.utcnow() - timedelta(days=2)  # Date posted two days before
@@ -107,3 +107,28 @@ def test_update_job(access_token, client, sample_job):
     assert update_res_json["added_date"] == job_in_db["added_date"]
     assert update_res_json["posted_date"] != job_in_db["posted_date"]
     assert job_in_db["posted_date"] is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.skip("Test is currently broken")
+async def test_delete_job_with_todos(test_db_async, async_client, event_loop):
+    # Make a user
+    user = "test@mail.com"
+    register_payload = {
+        "email": user,
+        "password": "1234"
+    }
+    # This currently does not work because the client is running another instance of the database
+    await async_client.post("/auth/register", json=register_payload)
+
+    # # Log in the user
+    # login_payload = {
+    #     "username": register_payload["email"], 
+    #     "password": register_payload["password"]
+    # }
+
+    # # Use data keyword here because we're sending a form
+    # login_response = async_client.post("/auth/jwt/login", data=login_payload)
+
+    document_count = await test_db_async.get_collection("jobs_collections").count_documents({})
+    assert document_count == 0
