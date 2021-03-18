@@ -1,5 +1,6 @@
 """
-Initialize Pydantic models for connections. This helps FastAPI do what it's supposed to do
+Initialize Pydantic models for jobs. 
+This helps FastAPI deal with data conversions.
 """
 
 from pydantic import UUID4, Field
@@ -35,11 +36,11 @@ class JobCreate(JobBase):
     description: str = None
     company: str
     url: str = None
-    added_date: datetime = datetime.utcnow()
-    posted_date: datetime = None  # TODO: Error might be here
+    posted_date: datetime = None
     status: Status = Status.added
     todos: List[UUID4] = []
     messages: List[UUID4] = []
+    tags: List[UUID4] = []
     user_id: UUID4 = None
 
 
@@ -47,6 +48,7 @@ class JobCreate(JobBase):
 class JobUpdate(JobBase):
     todos: List[UUID4] = []
     messages: List[UUID4] = []
+    tags: List[UUID4] = []
 
 
 # Props returned to client
@@ -54,6 +56,7 @@ class Job(JobBase):
     id: UUID4
     todos: List[UUID4] = []
     messages: List[UUID4] = []
+    tags: List[UUID4] = []
     user_id: UUID4
 
 
@@ -62,4 +65,5 @@ class JobInDB(JobBase):
     id: UUID4
     todos: List[UUID4] = []
     messages: List[UUID4] = []
+    tags: List[UUID4] = []
     user_id: UUID4

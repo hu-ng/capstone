@@ -1,5 +1,5 @@
 """
-Defines all actions that authenticated users can take with jobs
+Define the API endpoints for the job resource
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -20,7 +20,7 @@ from .user_routes import fastapi_users
 
 router = APIRouter()
 
-# Get all connections for this user
+# Get all jobs for this user
 @router.get("/", response_description="Return all jobs for this user", response_model=List[Optional[Job]])
 async def get_all_jobs(user: User = Depends(fastapi_users.get_current_active_user)):
     jobs = await job_actions.get_all(user.id)

@@ -1,3 +1,7 @@
+"""
+Define API endpoints for the users resource. Most of it has been included by the fastapi_users helper package.
+"""
+
 from fastapi_users import FastAPIUsers
 from fastapi import Request
 from typing import Dict, Any

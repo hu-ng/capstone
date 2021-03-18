@@ -32,9 +32,9 @@ def test_db():
     """
     Sets up the DB and clears the DB after every test.
     """
-    db = mongo_client.app
+    db = mongo_client.test_app
     yield db
-    mongo_client.drop_database("app")
+    mongo_client.drop_database("test_app")
     mongo_client.close()
 
 

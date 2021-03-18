@@ -16,8 +16,11 @@ def init_motor_client():
 # Open a Mongo instance with the URL
 client = init_motor_client()
 
-# Selects the database we want to work with
+# Get the database instance
 database = client.app
+
+if settings.ENV == "test":
+    database = client.test_app
 
 # Users collection
 user_collection = database.get_collection("users_collection")
@@ -33,6 +36,9 @@ templates_collection = database.get_collection("templates_collection")
 
 # Message collection
 message_collection = database.get_collection("messages_collection")
+
+# Tags collection
+tags_collection = database.get_collection("tags_collection")
 
 # MongoDB Database adapter
 user_db = MongoDBUserDatabase(UserDB, user_collection)
