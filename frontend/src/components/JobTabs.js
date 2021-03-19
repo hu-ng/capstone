@@ -50,7 +50,7 @@ function JobTabs(props) {
           centered
         >
           <Tab label="Description" {...a11yProps(0)} />
-          <Tab label="Todos" {...a11yProps(1)} />
+          <Tab label="To-dos" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
 

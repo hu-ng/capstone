@@ -62,7 +62,7 @@ const EditTodoForm = (props) => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
-      <DialogTitle>Edit this Todo</DialogTitle>
+      <DialogTitle>Edit this To-do</DialogTitle>
       {/* Form Content */}
       <DialogContent>
         <Grid container spacing={3}>

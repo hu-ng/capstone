@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, IconButton } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import AddTodoForm from "./AddTodoForm";
 import TodoList from "./TodoList";
@@ -17,9 +17,14 @@ const TodoTab = (props) => {
     <Grid container>
       <Grid item xs={12} className="py-2">
         {/* Add a todo */}
-        <IconButton color="primary" onClick={onAddTodo}>
-          <AddCircleIcon />
-        </IconButton>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddCircleIcon />}
+          onClick={onAddTodo}
+        >
+          Add New
+        </Button>
         <AddTodoForm
           jobId={job.id}
           open={openAddTodo}

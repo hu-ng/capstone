@@ -20,14 +20,9 @@ import {
 
 import DatetimeUtils from "../utils/datetime";
 import extractErrorFromMutation from "../utils/error";
+import Status from "../utils/statusConst";
 
-const StatusList = {
-  Added: "0",
-  Applied: "1",
-  Interviewing: "2",
-  Offer: "3",
-  Rejected: "-1",
-};
+const StatusList = Status.ReverseStatusList;
 
 // This component is the pop up form to add a job
 const AddJobForm = (props) => {

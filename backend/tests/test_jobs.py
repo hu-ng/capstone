@@ -15,7 +15,7 @@ def sample_job_data():
 
 @pytest.fixture
 def invalid_inputs():
-    # Title is intentionally excluded
+    # Title is intentionally excluded so that it is an invalid input
     job = {
         "company": "Google"
     }

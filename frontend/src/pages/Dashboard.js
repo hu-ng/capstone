@@ -21,10 +21,14 @@ import {
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import AddJobForm from "../components/AddJobForm";
+import KeyStats from "../components/KeyStats";
 import JobDetail from "../components/JobDetail";
 import JobSearchBar from "../components/JobSearchBar";
 
 import DatetimeUtils from "../utils/datetime";
+import Status from "../utils/statusConst";
+
+const StatusList = Status.StatusList;
 
 const useStyles = makeStyles({
   table: {
@@ -35,20 +39,12 @@ const useStyles = makeStyles({
   },
 });
 
-// List of job status
-const StatusList = {
-  0: "Added",
-  1: "Applied",
-  2: "Interviewing",
-  3: "Offer",
-  "-1": "Rejected",
-};
-
 // Dashboard: the main view of the app. Contains the jobs table and the job detail view.
 function Dashboard() {
   const { authTokens } = useAuth();
   const [jobHovered, setJobHovered] = useState("");
   const [openForm, setOpenForm] = useState(false);
+  const [openStats, setOpenStats] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   const [keyword, setKeyword] = useState("");
   const [jobsDisplay, setJobsDisplay] = useState([]);
@@ -98,11 +94,6 @@ function Dashboard() {
     } else {
       setSelectedId(jobId);
     }
-  };
-
-  // Open the form to add a new job
-  const openJobForm = (e) => {
-    setOpenForm(true);
   };
 
   // Handle input change in the search bar
@@ -172,19 +163,33 @@ function Dashboard() {
 
           <Grid container className="pb-3" alignItems="center">
             <Grid item container alignItems="center" justify="space-between">
-              {/* Button to add form*/}
+              {/* Button to show form */}
               <Grid item>
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={openJobForm}
+                  onClick={(e) => setOpenForm(true)}
                 >
                   New Job
                 </Button>
+
+                {/* Add form */}
+                <AddJobForm
+                  open={openForm}
+                  setOpenForm={setOpenForm}
+                ></AddJobForm>
               </Grid>
 
               <Grid item>
-                <Link href="#">View your stats!</Link>
+                <Link href="#" onClick={(e) => setOpenStats(true)}>
+                  View your stats
+                </Link>
+                <KeyStats
+                  open={openStats}
+                  jobs={jobsDefault}
+                  tags={tags}
+                  handler={setOpenStats}
+                ></KeyStats>
               </Grid>
             </Grid>
 
@@ -222,7 +227,6 @@ function Dashboard() {
                 />
               </Grid>
             </Grid>
-            <AddJobForm open={openForm} setOpenForm={setOpenForm}></AddJobForm>
           </Grid>
 
           {/* List of jobs */}

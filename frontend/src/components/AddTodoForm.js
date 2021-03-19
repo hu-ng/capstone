@@ -75,7 +75,7 @@ const AddTodoForm = (props) => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
-      <DialogTitle>Add a new Todo</DialogTitle>
+      <DialogTitle>Add a new To-do</DialogTitle>
       {/* Form Content */}
       <DialogContent>
         <Grid container spacing={3}>
