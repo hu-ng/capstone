@@ -1,5 +1,5 @@
 """
-Provides helper functions to interact with the database
+Provide CRUD functions to communicate with the database. For jobs
 """
 
 from backend.server.database import jobs_collection
@@ -14,6 +14,7 @@ async def get_all(user_id):
     cursor = jobs_collection.find({
         "user_id": { "$eq": user_id}
     })
+    # Sort by status
     cursor.sort("status", pymongo.DESCENDING)
     found_jobs = []
     async for job in cursor:
@@ -59,7 +60,6 @@ async def update(job_id, data: JobUpdate):
         
 
 # Delete a job and all things with it
-# Todos and Messages
 async def delete(job_id):
     job = await jobs_collection.find_one({"_id": job_id})
     job = JobInDB.from_mongo(job)

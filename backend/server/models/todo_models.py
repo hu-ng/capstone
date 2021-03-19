@@ -1,3 +1,8 @@
+"""
+Initialize Pydantic models for to-dos. 
+This helps FastAPI deal with data conversions.
+"""
+
 from pydantic import UUID4, Field, validator
 from typing import Any
 from datetime import datetime, timezone

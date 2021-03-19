@@ -1,5 +1,5 @@
 """
-Define the API endpoints for the job resource
+Define API endpoints for the job resource
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -40,7 +40,7 @@ async def get_job(job_id: UUID4, user: User = Depends(fastapi_users.get_current_
 @router.post("/", response_description="Create and return a new job", response_model=Job)
 async def create_job(job: JobCreate, user: User = Depends(fastapi_users.get_current_active_user)):
     # Add the current user in the input data, and convert to JobCreate model
-    data = job.dict()
+    data = job.mongo()
     data["user_id"] = user.id
     data = JobCreate(**data)
     new_job = await job_actions.create(data)
@@ -73,6 +73,7 @@ async def delete_job(job_id: UUID4, user: User = Depends(fastapi_users.get_curre
 
 
 # ----- Routes for todos ---------
+# Get all todos for a job
 @router.get("/{job_id}/todos/", response_description="Get all todos for the job", response_model=List[Optional[Todo]])
 async def get_todos(job_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
     # Get the job object
@@ -86,7 +87,7 @@ async def get_todos(job_id: UUID4, user: User = Depends(fastapi_users.get_curren
 
     return todos
 
-
+# Get one todo given job id and todo id
 @router.get("/{job_id}/todos/{todo_id}", response_description="Get a todo for a job", response_model=Todo)
 async def get_todo(job_id: UUID4, todo_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
     # Get the job object
@@ -103,7 +104,7 @@ async def get_todo(job_id: UUID4, todo_id: UUID4, user: User = Depends(fastapi_u
     else:
         return HTTPException(status_code=404, detail=f"Todo {todo_id} not found")
 
-
+# Create one todo for the job
 @router.post("/{job_id}/todos/", response_description="Add a todo for this job", response_model=Job)
 async def create_todo(job_id: UUID4, todo: TodoCreate, user: User = Depends(fastapi_users.get_current_active_user)):
     # Get the job object
@@ -125,6 +126,7 @@ async def create_todo(job_id: UUID4, todo: TodoCreate, user: User = Depends(fast
     raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't add todo")
 
 
+# Update one todo for the job
 @router.put("/{job_id}/todos/{todo_id}", response_description="Update a todo for this job")
 async def update_todo(job_id: UUID4, todo_id: UUID4, todo: TodoUpdate, user: User = Depends(fastapi_users.get_current_active_user)):
     # Get the job object
@@ -137,7 +139,7 @@ async def update_todo(job_id: UUID4, todo_id: UUID4, todo: TodoUpdate, user: Use
 
     raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't update todo")
 
-
+# Delete a todo
 @router.delete("/{job_id}/todos/{todo_id}", response_description="Delete this todo", response_model=Job)
 async def delete_todo(job_id: UUID4, todo_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
     # Get the job object

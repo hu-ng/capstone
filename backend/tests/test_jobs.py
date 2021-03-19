@@ -107,28 +107,3 @@ def test_update_job(access_token, client, sample_job_data):
     assert update_res_json["added_date"] == job_in_db["added_date"]
     assert update_res_json["posted_date"] != job_in_db["posted_date"]
     assert job_in_db["posted_date"] is None
-
-
-@pytest.mark.asyncio
-@pytest.mark.skip("Test is currently broken")
-async def test_delete_job_with_todos(test_db_async, async_client, event_loop):
-    # Make a user
-    user = "test@mail.com"
-    register_payload = {
-        "email": user,
-        "password": "1234"
-    }
-    # This currently does not work because the client is running another instance of the database
-    await async_client.post("/auth/register", json=register_payload)
-
-    # # Log in the user
-    # login_payload = {
-    #     "username": register_payload["email"], 
-    #     "password": register_payload["password"]
-    # }
-
-    # # Use data keyword here because we're sending a form
-    # login_response = async_client.post("/auth/jwt/login", data=login_payload)
-
-    document_count = await test_db_async.get_collection("jobs_collections").count_documents({})
-    assert document_count == 0

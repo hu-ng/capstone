@@ -1,5 +1,6 @@
 """
-Define API endpoints for the users resource. Most of it has been included by the fastapi_users helper package.
+Define API endpoints for the users resource. 
+Most of it has been included by the fastapi_users package.
 """
 
 from fastapi_users import FastAPIUsers

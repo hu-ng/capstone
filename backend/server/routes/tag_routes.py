@@ -39,11 +39,8 @@ async def get_tag(tag_id: UUID4, user: User = Depends(fastapi_users.get_current_
 @router.post("/", response_description="Create and return a new tag", response_model=Tag)
 async def create_tag(tag: TagCreate, user: User = Depends(fastapi_users.get_current_active_user)):
     # Add the user_id in the input data, and convert to TagCreate model
-    data = tag.dict()
+    data = tag.mongo()
     data["user_id"] = user.id
     data = TagCreate(**data)
     new_tag = await tag_actions.create(data)
     return new_tag
-
-
-# Route to delete a tag

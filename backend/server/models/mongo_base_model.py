@@ -1,3 +1,9 @@
+"""
+Initializes helper Pydantic models to assist with data conversion issues regarding Mongo.
+Mongo uses _id instead of id, but it is awkward for us to keep that conversion in mind.
+MongoModel provides helper functions to make that conversion happen whenever we need it.
+"""
+
 from pydantic import BaseModel, BaseConfig
 from datetime import datetime
 

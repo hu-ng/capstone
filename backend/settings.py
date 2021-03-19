@@ -1,5 +1,5 @@
 """
-Load environment variables
+Load environment variables from the .env file
 """
 
 from dotenv import load_dotenv

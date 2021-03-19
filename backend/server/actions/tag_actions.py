@@ -1,5 +1,5 @@
 """
-All database actions involving tags
+Provide CRUD functions to communicate with the database. For tags
 """
 
 from backend.server.database import tags_collection

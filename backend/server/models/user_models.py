@@ -1,5 +1,7 @@
 """
-Initialize Pydantic models for users. This helps FastAPI do what it's supposed to do
+Initialize Pydantic models for users. 
+This helps FastAPI deal with data conversions.
+The base class in this file is provided by fastapi-users.
 """
 
 from fastapi_users import models

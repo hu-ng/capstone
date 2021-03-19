@@ -1,5 +1,5 @@
 """
-Helper database actions involving users
+Provide CRUD functions to communicate with the database. For users
 """
 
 from backend.server.database import user_collection

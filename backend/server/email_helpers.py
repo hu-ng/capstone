@@ -1,3 +1,7 @@
+"""
+Extracts the logic needed to craft a notification email.
+"""
+
 from fastapi_mail import ConnectionConfig
 from backend.server.actions import job_actions, todo_actions
 from datetime import datetime, timedelta
@@ -29,7 +33,7 @@ async def build_template(user):
     # Pre-process todos
     todo_render_data = []
     for todo in incomplete_todos:
-        data = todo.dict()
+        data = todo.mongo()
         days_delta = (data["due_date"] - datetime.utcnow()).days
         data["days_delta"] = max(days_delta, 0)
         todo_render_data.append(data)
@@ -39,7 +43,7 @@ async def build_template(user):
     stale_jobs = []     # Jobs that are stale
     optimal_window = 4  # Window to apply for a job based on posted date
     for job in jobs:
-        data = job.dict()
+        data = job.mongo()
         current_time = datetime.utcnow()
         posted_date = job.posted_date
         tentative_deadline = posted_date + timedelta(days=optimal_window)
@@ -53,7 +57,7 @@ async def build_template(user):
         elif current_time > tentative_deadline:
             stale_jobs.append(data)
 
-    # Load templates
+    # Load the email template
     path=os.path.join(os.path.dirname(__file__),'./templates')
     templateLoader = FileSystemLoader(path)
     templateEnv = Environment(loader=templateLoader)
