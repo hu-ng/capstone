@@ -9,12 +9,10 @@ from pydantic import UUID4, BaseModel, validator
 
 import backend.server.actions.job_actions as job_actions
 import backend.server.actions.todo_actions as todo_actions
-import backend.server.actions.message_actions as message_actions
 import backend.server.actions.tag_actions as tag_actions
 
 from backend.server.models.job_models import Job, JobCreate, JobUpdate
 from backend.server.models.todo_models import Todo, TodoCreate, TodoUpdate
-from backend.server.models.message_models import Message, MessageCreate, MessageUpdate
 from backend.server.models.tag_models import TagCreate
 from backend.server.models.user_models import User
 from .user_routes import fastapi_users
@@ -209,97 +207,3 @@ async def add_tag_for_job(job_id: UUID4, tag_request: TagRequest, user: User = D
     # Update the job and return it
     updated_job = await job_actions.update(job_id, job)
     return updated_job
-
-    
-# ------ Routes for messages --------
-@router.get("/{job_id}/messages/", response_model=List[Optional[Message]])
-async def get_messages(job_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
-    # Get the job object
-    job = await job_actions.get_one(job_id, user.id)
-
-    if not job:
-        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
-
-    # Get all messages for a job
-    messages = await message_actions.get_all(job)
-
-    return messages
-
-
-@router.get("/{job_id}/messages/{message_id}", response_model=Message)
-async def get_message(job_id: UUID4, message_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
-    # Get the job object
-    job = await job_actions.get_one(job_id, user.id)
-
-    if not job:
-        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
-    
-    # If message_id in job, grab todo
-    if message_id in job.mongo()["messages"]:
-        message = await message_actions.get_one(message_id)
-        return message
-    else:
-        return HTTPException(status_code=401, detail=f"Message {message_id} not found")
-
-
-@router.post("/{job_id}/messages/", response_model=Job)
-async def create_message(job_id: UUID4, message: MessageCreate, user: User = Depends(fastapi_users.get_current_active_user)):
-    # Get the job object
-    job = await job_actions.get_one(job_id, user.id)
-
-    if job:
-        # Get new
-        new_message = await message_actions.create(message)
-
-        # Add todo to the job, and update the job
-        new_job_data = job.mongo()
-        new_job_data["messages"].append(new_message.id)
-
-        new_job = await job_actions.update(job_id, JobUpdate(**new_job_data))
-
-        # return the job
-        return new_job
-
-    raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't add todo")
-
-
-@router.put("/{job_id}/messages/{message_id}", response_description="Update a message for this job")
-async def update_message(job_id: UUID4, message_id: UUID4, message: MessageUpdate, user: User = Depends(fastapi_users.get_current_active_user)):
-    # Get the job object
-    job = await job_actions.get_one(job_id, user.id)
-
-    # If job exists and message belongs to job
-    if job and message_id in job.mongo()["messages"]:
-        updated_message = await message_actions.update(message_id, message)
-        return {'job': job, 'message': updated_message}
-
-    raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't update message")
-
-
-@router.delete("/{job_id}/messages/{message_id}", response_description="Delete this message", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_message(job_id: UUID4, message_id: UUID4, user: User = Depends(fastapi_users.get_current_active_user)):
-    # Get the job object
-    job = await job_actions.get_one(job_id, user.id)
-
-
-    # If job exist, delete the todo
-    if job and message_id in job.mongo()["messages"]:
-
-        # Delete todo
-        result = await message_actions.delete(message_id)
-
-        # If deleted
-        if result:
-            # Remove reference from jobs
-            new_job_data = job.mongo()
-            new_job_data["messages"].remove(message_id)
-            await job_actions.update(job_id, JobUpdate(**new_job_data))         
-
-            return Response(status_code=status.HTTP_204_NO_CONTENT)
-        # If not, return error
-        else:
-            raise HTTPException(status_code=404, detail=f"Message {message_id} not found")
-    
-    # If job not found, return error
-    else:
-        raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't delete job")

@@ -70,9 +70,10 @@ const KeyStats = (props) => {
     setBreakdown(getBreakdown(jobs));
   };
 
-  // Initialize breakdown with all jobs. This runs once
+  // Calculate new breakdown and set jobs filtered whenever jobs from parent changes
   useEffect(() => {
     setBreakdown(getBreakdown(jobs));
+    setJobsFiltered(jobs);
   }, [jobs]);
 
   // Every time jobsFiltered is changed, we calculate a new breakdown

@@ -10,7 +10,7 @@ import logging
 
 from backend.server.actions import user_actions
 from .email_helpers import build_template, email_config
-from .routes import user_routes, job_routes, template_routes, tag_routes
+from .routes import user_routes, job_routes, tag_routes
 from .database import client
 
 
@@ -45,9 +45,6 @@ app.include_router(user_routes.users_router, tags=["users"], prefix="/users")
 
 # Jobs router
 app.include_router(job_routes.router, tags=["jobs"], prefix="/jobs")
-
-# Template router
-app.include_router(template_routes.router, tags=["templates"], prefix="/templates")
 
 # Tags router
 app.include_router(tag_routes.router, tags=["tags"], prefix="/tags")
