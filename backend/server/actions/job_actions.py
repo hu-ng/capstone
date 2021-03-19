@@ -20,6 +20,16 @@ async def get_all(user_id):
         found_jobs.append(JobInDB.from_mongo(job))
     return found_jobs
 
+# Get all jobs based on status
+async def get_all_with_status(user_id, status):
+    cursor = jobs_collection.find({
+        "user_id": { "$eq": user_id},
+        "status": {"$eq": status}
+    })
+    found_jobs = []
+    async for job in cursor:
+        found_jobs.append(JobInDB.from_mongo(job))
+    return found_jobs
 
 # Get one job
 async def get_one(job_id, user_id):

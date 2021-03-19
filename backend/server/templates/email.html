@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email notification from Jobful</title>
+</head>
+<body>
+    <h2>
+        Here's your action items for today!
+    </h2>
+    <div>
+        <p>Jobs to focus on:</p>
+        <ul>
+            {% for job in jobs_to_focus %}
+                {% if job.apply_in == 0%}
+                    <li>
+                        {{job.title}} - {{job.company}} - Apply today
+                    </li>
+                {% else %}
+                    <li>
+                        {{job.title}} - {{job.company}} - Apply within {{job.apply_in}} days
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        {% if stale_jobs %}
+            <p>Stale jobs:</p>
+            <ul>
+                {% for job in stale_jobs %}
+                    <li>
+                        {{job.title}} - {{job.company}}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div>    
+        <p>Unfinished to-dos:</p>
+        <ul>
+            {% for todo in todos %}
+                {% if todo.days_delta > 0 %}
+                    <li>
+                        {{todo.title}} - Due in {{todo.days_delta}} days
+                    </li>
+                {% else %}
+                    <li>
+                        {{todo.title}} - Due today
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

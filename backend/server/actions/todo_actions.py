@@ -3,12 +3,16 @@ from backend.server.models.job_models import JobInDB
 from backend.server.models.todo_models import TodoInDB, TodoCreate, TodoUpdate
 
 # Get all todos for a job
-async def get_all(job: JobInDB):
+async def get_all(job: JobInDB, done=None):
+    """
+    If done is set to either 0 or 1, filter by that as well
+    """
     todos = []
     for todo_id in job.todos:
         todo = await todos_collection.find_one({"_id": todo_id})
-        todos.append(TodoInDB.from_mongo(todo))
-
+        if done is not None:
+            if todo["done"] == done:
+                todos.append(TodoInDB.from_mongo(todo))
     return todos
 
 
