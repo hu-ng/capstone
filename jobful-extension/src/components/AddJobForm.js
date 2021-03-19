@@ -54,9 +54,6 @@ const AddJobForm = (props) => {
       status,
       posted_date: DatetimeUtils.formatForDB(postedDate),
     };
-
-    console.log(axios.defaults.headers.common);
-
     createJobMutation.mutate(requestBody);
     resetForm();
   };

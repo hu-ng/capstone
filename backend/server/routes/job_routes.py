@@ -5,15 +5,17 @@ Define the API endpoints for the job resource
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import Response
 from typing import List, Optional
-from pydantic import UUID4
+from pydantic import UUID4, BaseModel, validator
 
 import backend.server.actions.job_actions as job_actions
 import backend.server.actions.todo_actions as todo_actions
 import backend.server.actions.message_actions as message_actions
+import backend.server.actions.tag_actions as tag_actions
 
 from backend.server.models.job_models import Job, JobCreate, JobUpdate
 from backend.server.models.todo_models import Todo, TodoCreate, TodoUpdate
 from backend.server.models.message_models import Message, MessageCreate, MessageUpdate
+from backend.server.models.tag_models import TagCreate
 from backend.server.models.user_models import User
 from .user_routes import fastapi_users
 
@@ -165,6 +167,48 @@ async def delete_todo(job_id: UUID4, todo_id: UUID4, user: User = Depends(fastap
     # If job not found, return error
     else:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found, can't delete job")
+
+# ------ Routes for tags ------------
+
+# Custom Pydantic class to validate request body for the next route
+class TagRequest(BaseModel):
+    name: Optional[str] = None
+    tag_id: Optional[str] = None
+
+    @validator("tag_id")
+    def at_least_one_field_exists(cls, v, values):
+        if not v and not values["name"]:
+            raise ValueError("Request body should include at least 'name' or 'tag_id'")
+        return v
+    
+# Helper route to add tags for a job
+@router.put("/{job_id}/tags/", response_description="Add a tag for this job")
+async def add_tag_for_job(job_id: UUID4, tag_request: TagRequest, user: User = Depends(fastapi_users.get_current_active_user)):
+    # Find the job
+    job = await job_actions.get_one(job_id, user.id)
+
+    # Raise an error if we can't find the job
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    
+    # If we receive an id, update the job object directly
+    if tag_request.tag_id:
+        job.tags.append(tag_request.tag_id)
+    
+    # If not, and we receive a name, this means we need to create a new tag
+    if tag_request.name:
+        # Create a new tag
+        tag_create = TagCreate(name=tag_request.name, user_id=user.id)
+
+        print(tag_create)
+        new_tag = await tag_actions.create(tag_create)
+
+        # Add the id to the tags list
+        job.tags.append(new_tag.id)
+
+    # Update the job and return it
+    updated_job = await job_actions.update(job_id, job)
+    return updated_job
 
     
 # ------ Routes for messages --------

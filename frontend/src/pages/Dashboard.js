@@ -44,23 +44,37 @@ function Dashboard() {
   const [keyword, setKeyword] = useState("");
   const [jobsDisplay, setJobsDisplay] = useState([]);
   const [jobsDefault, setJobsDefault] = useState([]);
+  const [tags, setTags] = useState([]);
 
   // Set authentication headers
   axios.defaults.headers.common = {
     Authorization: `Bearer ${authTokens.access_token}`,
   };
 
-  // Async axios query
+  // Async axios query to get all jobs
   const fetchJobs = async () => {
     const { data } = await axios.get("/jobs/");
     return data;
   };
 
-  // Query hook to fetch data
-  const { isLoading, isError } = useQuery("jobs", fetchJobs, {
+  // Async axios query to get all tags
+  const fetchTags = async () => {
+    const { data } = await axios.get("/tags/");
+    return data;
+  };
+
+  // Query hook to fetch jobs
+  const jobsQueryRes = useQuery("jobs", fetchJobs, {
     onSuccess: (data) => {
       setJobsDisplay(data);
       setJobsDefault(data);
+    },
+  });
+
+  // Query hook to fetch tags
+  const tagsQueryRes = useQuery("tags", fetchTags, {
+    onSuccess: (data) => {
+      setTags(data);
     },
   });
 
@@ -100,9 +114,17 @@ function Dashboard() {
 
   return (
     <div>
-      {isError && <div>Something went wrong ...</div>}
-      {isLoading && <div>Loading...</div>}
+      {/* Error banner */}
+      {(jobsQueryRes.isError || tagsQueryRes.isError) && (
+        <div>Something went wrong ...</div>
+      )}
+
+      {/* Loading banner */}
+      {(jobsQueryRes.isLoading || tagsQueryRes.isLoading) && (
+        <div>Loading...</div>
+      )}
       <Grid container spacing={5} className="pt-5 px-4">
+        {/* Pipeline view */}
         <Grid item xs={5}>
           <Grid container className="py-3">
             <Typography
@@ -178,7 +200,7 @@ function Dashboard() {
         {/* Individual job view */}
         {getSelectedJob(selectedId) && (
           <Grid item xs={7}>
-            <JobDetail job={getSelectedJob(selectedId)}></JobDetail>
+            <JobDetail job={getSelectedJob(selectedId)} tags={tags}></JobDetail>
           </Grid>
         )}
       </Grid>

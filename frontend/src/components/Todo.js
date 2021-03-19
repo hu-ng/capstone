@@ -70,7 +70,6 @@ function Todo(props) {
   };
 
   const onDeleteTodo = (_, jobId, todoId) => {
-    console.log(jobId, todoId);
     deleteTodoMutation.mutate({ jobId, todoId });
   };
 

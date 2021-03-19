@@ -2,7 +2,6 @@ import { Typography, AppBar, Tabs, Tab, Box } from "@material-ui/core";
 import React, { useState } from "react";
 
 import TodoTab from "./TodoTab";
-import Messages from "./Messages";
 
 // A tab panel
 function TabPanel(props) {
@@ -52,23 +51,20 @@ function JobTabs(props) {
         >
           <Tab label="Description" {...a11yProps(0)} />
           <Tab label="Todos" {...a11yProps(1)} />
-          <Tab label="Messages" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
       {/* Description */}
       <TabPanel value={value} index={0}>
-        <div style={{ whiteSpace: "pre-line" }}>{job.description}</div>
+        <div style={{ whiteSpace: "pre-line" }}>
+          {job.description ||
+            "Add a description for the job or any notes you'd like to record!"}
+        </div>
       </TabPanel>
 
       {/* Todos */}
       <TabPanel value={value} index={1}>
         <TodoTab job={job}></TodoTab>
-      </TabPanel>
-
-      {/* Messages */}
-      <TabPanel value={value} index={2}>
-        <Messages></Messages>
       </TabPanel>
     </div>
   );

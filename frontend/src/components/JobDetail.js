@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
 
 import { Paper, Grid, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import EditJobForm from "./EditJobForm";
 import JobTabs from "./JobTabs";
-import { useMutation, useQueryClient } from "react-query";
+import Tags from "./Tags";
 
 const useStyles = makeStyles({
   paper: {
@@ -14,9 +15,10 @@ const useStyles = makeStyles({
   },
 });
 
-// Main
+// This component shows a more detailed view of the position
+// Holder of more job-specific user actions
 const JobDetail = (props) => {
-  const { job } = props;
+  const { job, tags } = props;
   const [editForm, setEditForm] = useState(false);
   const classes = useStyles();
 
@@ -60,7 +62,7 @@ const JobDetail = (props) => {
           <Grid container>
             <Grid item xs={6}>
               <Typography variant="h4">
-                {job.company} - {statusToStr(job.status)}
+                {job.company} - {job.title}
               </Typography>
             </Grid>
 
@@ -95,11 +97,10 @@ const JobDetail = (props) => {
             </Grid>
           </Grid>
         </Grid>
-
-        <Grid item xs={12}>
-          <Typography variant="h6">{job.title}</Typography>
-        </Grid>
       </Grid>
+
+      {/* Tags */}
+      <Tags job={job} tags={tags}></Tags>
 
       {/* Tabs */}
       <JobTabs job={job}></JobTabs>
