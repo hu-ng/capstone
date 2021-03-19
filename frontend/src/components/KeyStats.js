@@ -27,6 +27,9 @@ const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
+  root: {
+    minHeight: 240,
+  },
 });
 
 // A quick tool to show you the breakdown of your job search
@@ -82,7 +85,7 @@ const KeyStats = (props) => {
       {open && (
         <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
           <DialogTitle>Job Search Performance</DialogTitle>
-          <DialogContent>
+          <DialogContent className={classes.root}>
             <Grid container spacing={3}>
               <Grid item container alignItems="center" justify="center">
                 <Grid item xs={3}>
