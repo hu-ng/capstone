@@ -10,6 +10,7 @@ const JobSearchBar = ({ keyword, handler }) => {
       margin="dense"
       value={keyword}
       onChange={handler}
+      // style={{ paddingLeft: "10px", flex: 4 }}
     ></TextField>
   );
 };
