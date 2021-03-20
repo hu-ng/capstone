@@ -14,7 +14,7 @@
     "48": "jobful.png",
     "128": "jobful.png"
   },
-  "content_security_policy": "script-src 'self' 'sha256-F8PdINHDndeQhOj8mD2vh+oGt++f3gFA4ALK3+8Ce04='; object-src 'self'",
+  "content_security_policy": "script-src 'self' 'sha256-YQVtEhjs/bwC4gIg1nHTINrkQSC9VE1XTZqbXWhDBJk='; object-src 'self'",
   "permissions": [
     "http://*/*"
   ]
