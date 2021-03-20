@@ -58,7 +58,6 @@ function App(props) {
             </div>
           </Router>
         </Provider>
-        <ReactQueryDevtools initialIsOpen />
       </QueryClientProvider>
     </AuthContext.Provider>
   );
