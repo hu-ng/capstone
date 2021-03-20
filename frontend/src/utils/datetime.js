@@ -3,6 +3,8 @@
 // - Convert time strings from DB into local time on the client.
 // - Convert local time strings back into UTC before sending a request.
 
+// Future update: Migrate to luxon entirely, instead of using both JavaScript Date and Luxon.
+
 import { DateTime } from "luxon"; // Luxon makes it easier to do all of this
 
 const DatetimeUtils = (function () {
