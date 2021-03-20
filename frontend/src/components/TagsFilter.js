@@ -1,3 +1,6 @@
+// A component that filters through jobs passed to it based on chosen tags.
+// A wrapper component around Autocomplete from Material UI.
+
 import { TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 

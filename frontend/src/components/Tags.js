@@ -1,3 +1,5 @@
+// Renders tags attached to the job and the input to create new ones
+
 import { useEffect, useState } from "react";
 import { Grid, Paper, InputBase } from "@material-ui/core";
 import { useMutation, useQueryClient } from "react-query";

@@ -1,3 +1,5 @@
+// Inside the JobDetail view, there are multiple tabs you can toggle through. This component holds these tabs.
+
 import { Typography, AppBar, Tabs, Tab, Box } from "@material-ui/core";
 import React, { useState } from "react";
 

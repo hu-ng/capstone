@@ -1,3 +1,5 @@
+// A list of todos. Simple wrapper around many Todo components
+
 import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";

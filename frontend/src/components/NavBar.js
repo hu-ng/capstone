@@ -1,3 +1,5 @@
+// Simple nav bar. Reacts to auth/no auth state.
+
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";

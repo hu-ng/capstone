@@ -1,3 +1,6 @@
+// A pop-up tool to show users analytics on their job search. Filterable via tags.
+// Exists in a pop-up Dialog box
+
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 

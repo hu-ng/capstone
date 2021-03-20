@@ -1,3 +1,5 @@
+// Main side-view when users click on a row in the table. Holds all job-related subcomponents
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";

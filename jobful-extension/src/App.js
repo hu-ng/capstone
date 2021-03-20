@@ -1,3 +1,6 @@
+// The heard of the extension code.
+// Resuses a lot of the components written for the main app, but in a simplified manner.
+
 import { useState } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
@@ -10,7 +13,6 @@ import LoginForm from "./components/Login";
 import AddSuccess from "./components/AddSuccess";
 
 // Axios configs
-// axios.defaults.baseURL = `http://${window.location.hostname}:${8000}`;
 axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.headers.post["Content-Type"] = "application/json";
 

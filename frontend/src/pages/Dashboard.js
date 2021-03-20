@@ -1,3 +1,6 @@
+// The primary page of the app. Holds two main components: the Pipeline table and the JobDetail view.
+// Also holds filters for the table: Search bar and tags autocomplete bar.
+
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useAuth } from "../context/auth";

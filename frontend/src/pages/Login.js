@@ -1,3 +1,5 @@
+// Login page
+
 import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Grid, TextField, Button } from "@material-ui/core";
@@ -12,8 +14,6 @@ const Login = (props) => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const { setAuthTokens } = useAuth();
-
-  // const referrer = props.location.state.referrer || "/";
 
   function postLogin() {
     // Config for the login
@@ -49,6 +49,7 @@ const Login = (props) => {
     return <Redirect to="/dashboard" />;
   }
 
+  // Returns a simple form to login
   return (
     <Grid container justify="center" className="pt-5">
       <Grid item xs={3}>

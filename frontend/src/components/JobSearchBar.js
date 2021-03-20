@@ -1,3 +1,5 @@
+// Search bar to help users filer through jobs.
+
 import { TextField } from "@material-ui/core";
 import React from "react";
 
@@ -10,7 +12,6 @@ const JobSearchBar = ({ keyword, handler }) => {
       margin="dense"
       value={keyword}
       onChange={handler}
-      // style={{ paddingLeft: "10px", flex: 4 }}
     ></TextField>
   );
 };

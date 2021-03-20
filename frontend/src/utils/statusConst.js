@@ -1,4 +1,4 @@
-// Defines the constants that will be reuse across the client
+// Defines the constants that will be reused across the app.
 
 const StatusList = {
   0: "Added",

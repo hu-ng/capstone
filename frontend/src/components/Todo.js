@@ -1,3 +1,5 @@
+// A single todo item
+
 import React, { useEffect, useState } from "react";
 import update from "immutability-helper";
 import axios from "axios";
@@ -18,66 +20,71 @@ import EditTodoForm from "./EditTodoForm";
 
 import DatetimeUtils from "../utils/datetime";
 
+// Axios query to get a todo by jobId and todoId
 async function getTodoById(jobId, todoId) {
   const { data } = await axios.get(`/jobs/${jobId}/todos/${todoId}`);
   return data;
 }
 
+// React Query hook that wraps around the above function
 function useTodo(jobId, todoId) {
   return useQuery(["todo", todoId], () => getTodoById(jobId, todoId));
 }
 
-// Main
 function Todo(props) {
   const [openEditForm, setOpenEditForm] = useState(false);
   const [done, setDone] = useState(false);
   const { jobId, todoId } = props;
   const labelId = `todo-${todoId}`;
 
-  // React query
+  // React query client
   const queryClient = useQueryClient();
   const { isLoading, isError, data } = useTodo(jobId, todoId);
 
-  // Update mutation
+  // React query mutation to update a todo
   const updateTodoMutation = useMutation(
     (requestBody) => axios.put(`/jobs/${jobId}/todos/${todoId}`, requestBody),
     {
+      // If successful, refetch data for this todo
       onSuccess: () => {
         queryClient.invalidateQueries(["todo", todoId]);
       },
     }
   );
 
-  // Delete mutation
+  // React query mutation to delete a todo
   const deleteTodoMutation = useMutation(
     ({ jobId, todoId }) => axios.delete(`/jobs/${jobId}/todos/${todoId}`),
     {
-      // This is a bit inefficient
       onSuccess: () => {
         queryClient.invalidateQueries("jobs");
       },
     }
   );
 
-  // API call to toggle the todo
+  // HWrapper function to toggle todo via API
   const toggleTodo = (todo) => {
     const requestBody = update(todo, { done: { $set: !todo.done } });
     updateTodoMutation.mutate(requestBody);
   };
 
+  // Wrapper function around form control prop
   const onOpenEdit = (_) => {
     setOpenEditForm(true);
   };
 
+  // Handler function to delete todo
   const onDeleteTodo = (_, jobId, todoId) => {
     deleteTodoMutation.mutate({ jobId, todoId });
   };
 
+  // Wrapper function to toggle the done state on both the client and backend
   const handleToggleTodo = (_, todo) => {
     setDone(!done);
     toggleTodo(todo);
   };
 
+  // When the component first mounts, use the query to update the states of todos
   useEffect(() => {
     axios
       .get(`/jobs/${jobId}/todos/${todoId}`)

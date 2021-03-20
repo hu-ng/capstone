@@ -1,3 +1,5 @@
+// A To-do Tab. Wrapper around a button to add todo and the actual To-do list
+
 import React, { useState } from "react";
 import { Grid, Button } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";

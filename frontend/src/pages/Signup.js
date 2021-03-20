@@ -1,3 +1,5 @@
+// Signup page
+
 import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Grid, TextField, Button } from "@material-ui/core";
@@ -46,6 +48,7 @@ const Signup = () => {
     return <Redirect to="/login" />;
   }
 
+  // Returns a simple form to signup
   return (
     <Grid container justify="center" className="pt-5">
       <Grid item xs={3}>

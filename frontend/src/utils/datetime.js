@@ -1,4 +1,9 @@
-import { DateTime } from "luxon";
+// Defines a helper module to deal with datetime wackiness on the client.
+// Because the backend expects and returns UTC ISO strings, we need to:
+// - Convert time strings from DB into local time on the client.
+// - Convert local time strings back into UTC before sending a request.
+
+import { DateTime } from "luxon"; // Luxon makes it easier to do all of this
 
 const DatetimeUtils = (function () {
   // Takes UTC string from server, returns a local JS Date object
