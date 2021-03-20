@@ -104,6 +104,7 @@ const EditTodoForm = (props) => {
                       label="Due Date"
                       value={dueDate}
                       onChange={handleDateChange}
+                      autoOk
                       KeyboardButtonProps={{
                         "aria-label": "change date",
                       }}

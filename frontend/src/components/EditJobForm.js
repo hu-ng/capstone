@@ -168,6 +168,7 @@ const EditJobForm = (props) => {
                       label="Posted Date"
                       value={postedDate}
                       onChange={handleDateChange}
+                      autoOk
                       KeyboardButtonProps={{
                         "aria-label": "change date",
                       }}
