@@ -28,3 +28,8 @@ For instructions on how to install the projects, view the folders' `README.md` f
 5. Daily email
 
 ![extension](./screenshots/daily_email.png)
+
+
+### Demo video showing main changes
+
+- https://www.loom.com/share/475a344eefdc41baaaf6fe66ec5b65d4
